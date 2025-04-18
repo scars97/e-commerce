@@ -23,11 +23,6 @@ GET http://localhost:8080/api/items?pageSize=10&pageNumber=1
 ```
 
 ### Response
-| name    | description     | type | require |
-|-------|--------|------|---------|
-| items | 상품 목록  | List | O       |
-
-### items
 | name        | description     | type    | require | example           |
 |-----------|--------|---------|---------|-------------------|
 | itemId    | 상품 ID  | Long    | O       | 1                 |
@@ -37,17 +32,15 @@ GET http://localhost:8080/api/items?pageSize=10&pageNumber=1
 | status    | 판매 상태  | String  | O       | SELLING, SOLD_OUT |
 ```json
 // 200 Ok
-{
-  "items": [
-    {
-      "itemId": 1,
-      "name": "오버핏 반팔티",
-      "price": 12000,
-      "thumbnail": "https://test.png",
-      "status": "SELLING"
-    }
-  ]
-}
+[
+  {
+    "itemId": 1,
+    "name": "오버핏 반팔티",
+    "price": 12000, 
+    "thumbnail": "https://test.png",
+    "status": "SELLING"
+  }
+]
 ```
 
 ## 인기 상품 조회
@@ -58,11 +51,6 @@ GET http://localhost:8080/api/items/popular
 ```
 
 ### Response
-| name           | description       | type | require |
-|--------------|----------|------|---------|
-| popularItems | 인기 상품 목록 | List | O       |
-
-### popularItems
 | name            | description | type    | require | example           |
 |-----------------|-------------|---------|---------|-------------------|
 | rank            | 인기 순위       | Int     | O       | 1 ~ n             |
@@ -75,19 +63,17 @@ GET http://localhost:8080/api/items/popular
 
 ```json
 // 200 Ok
-{
-  "popularItems": [
-    {
-      "rank": 1,
-      "cumulativeSales": 25000
-      "itemId": 1,
-      "name": "오버핏 반팔티",
-      "price": 12000,
-      "thumbnail": "https://test.png",
-      "status": "SELLING"
-    }
-  ]
-}
+[
+  {
+    "rank": 1, 
+    "cumulativeSales": 25000
+    "itemId": 1, 
+    "name": "오버핏 반팔티", 
+    "price": 12000, 
+    "thumbnail": "https://test.png", 
+    "status": "SELLING"
+  }
+]
 ```
 
 ## 주문
