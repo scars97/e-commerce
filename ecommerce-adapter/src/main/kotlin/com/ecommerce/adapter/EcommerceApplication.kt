@@ -1,9 +1,12 @@
-package com.study.ecommerce
+package com.ecommerce.adapter
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = [
+    "com.ecommerce.adapter",
+    "com.ecommerce.common"
+])
 class EcommerceApplication
 
 fun main(args: Array<String>) {
