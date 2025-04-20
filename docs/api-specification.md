@@ -305,18 +305,16 @@ Content-Type: application/json
 ```
 
 ### Response
-| name   | description | type    | require | example |
-|--------|-------------|---------|---------|---------|
-| userId | 사용자 ID      | Long    | O       | 1       |
-| price  | 충전 금액       | Decimal | O       | 10000   |
-| point  | 포인트 잔액      | Decimal | O       | 15000   |
+| name           | description | type    | require | example |
+|----------------|-------------|---------|---------|---------|
+| userId         | 사용자 ID      | Long    | O       | 1       |
+| remainingPoint | 포인트 잔액      | Decimal | O       | 15000   |
 
 ```json
 // 201 Created
 {
   "userId": 1,
-  "price": 10000,
-  "point": 15000
+  "remainingPoint": 15000
 }
 ```
 
