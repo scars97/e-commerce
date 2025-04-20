@@ -270,12 +270,6 @@ Content-Type: application/json
 
 ### Error
 ```json
-// 400 Bad Request
-{
-  "errorCode": "COUPON_NOT_ISSUANCE_PERIOD",
-  "message": "쿠폰 발급 기간이 아닙니다."
-}
-
 // 404 Not Found
 {
   "errorCode": "USER_NOT_FOUND",

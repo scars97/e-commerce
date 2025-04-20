@@ -16,9 +16,13 @@ enum class ErrorCode(
 
     // 쿠폰
     INVALID_COUPON(HttpStatus.BAD_REQUEST, "만료되었거나 사용할 수 없는 쿠폰입니다."),
+    COUPONS_ARE_EXHAUSTED(HttpStatus.CONFLICT, "쿠폰이 모두 소진되었습니다."),
 
     // 결제
     INVALID_PRICE(HttpStatus.BAD_REQUEST, "결제 금액이 맞지 않습니다."),
-    INSUFFICIENT_POINT(HttpStatus.UNPROCESSABLE_ENTITY, "잔액이 부족합니다.")
+    INSUFFICIENT_POINT(HttpStatus.UNPROCESSABLE_ENTITY, "잔액이 부족합니다."),
+
+    // 사용자
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")
 
 }
