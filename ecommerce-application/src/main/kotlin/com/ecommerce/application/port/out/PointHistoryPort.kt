@@ -6,6 +6,4 @@ interface PointHistoryPort {
 
     fun saveRechargeHistory(pointHistory: PointHistory)
 
-    fun saveUsedHistory(pointHistory: PointHistory)
-
 }
