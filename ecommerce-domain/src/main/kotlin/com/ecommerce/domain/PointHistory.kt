@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 class PointHistory(
     val id: Long?,
     val userId: Long,
-    val status: PointHistoryStatus
+    val status: PointHistoryStatus,
     val amount: BigDecimal,
     val createAt: LocalDateTime,
     val modifiedAt: LocalDateTime
@@ -16,7 +16,7 @@ class PointHistory(
         RECHARGE, USED
     }
 
-    constructor(userId: Long, status: PointHistoryStatus amount: BigDecimal, createAt: LocalDateTime, modifiedAt: LocalDateTime)
+    constructor(userId: Long, status: PointHistoryStatus, amount: BigDecimal, createAt: LocalDateTime, modifiedAt: LocalDateTime)
             :this(0, userId, status, amount, createAt, modifiedAt)
 
     companion object {

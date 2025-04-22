@@ -13,7 +13,7 @@ class IntegrateTestSupport {
     private lateinit var databaseCleanUp: DatabaseCleanUp
 
     @BeforeEach
-    fun setUp() {
+    fun execute() {
         databaseCleanUp.execute()
     }
 
