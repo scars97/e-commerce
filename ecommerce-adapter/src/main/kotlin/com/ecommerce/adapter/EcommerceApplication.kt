@@ -5,6 +5,7 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication(scanBasePackages = [
     "com.ecommerce.adapter",
+    "com.ecommerce.application",
     "com.ecommerce.common"
 ])
 class EcommerceApplication
