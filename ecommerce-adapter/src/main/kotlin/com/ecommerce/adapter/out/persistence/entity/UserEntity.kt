@@ -23,4 +23,8 @@ class UserEntity(
 
     @LastModifiedDate
     val modifiedAt: LocalDateTime
-)
+) {
+
+    constructor(username: String): this(0, username, BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now())
+
+}
