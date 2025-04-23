@@ -32,6 +32,16 @@ class ItemEntity(
     val modifiedAt: LocalDateTime
 ) {
 
+    constructor(
+        categoryId: Long,
+        name: String,
+        price: BigDecimal,
+        thumbnail: String,
+        status: Item.ItemStatus,
+        createAt: LocalDateTime,
+        modifiedAt: LocalDateTime
+    ): this(0, categoryId, name, price, thumbnail, status, createAt, modifiedAt)
+
     fun toDomain(): Item {
         return Item(
             id = this.id,

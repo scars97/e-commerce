@@ -5,7 +5,7 @@ import java.math.BigDecimal
 
 data class ItemResult(
     val itemId: Long,
-    val categoryId: Long
+    val categoryId: Long,
     val name: String,
     val price: BigDecimal,
     val thumbnail: String,
