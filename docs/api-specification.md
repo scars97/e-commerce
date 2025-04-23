@@ -13,34 +13,52 @@
 GET http://localhost:8080/api/items
 ```
 
-### Request Parameter
+### Query String Parameter
 | name | description | type | require | example |
-|---------|---------|-----|-------|---------|
-| pageSize | 한 페이지 노출 수 | Int | X | 10      |
-| pageNumber | 페이지 번호 | Int | X | 1 ~ n   | 
+|------|------------|-----|-------|--------|
+| page | 페이지        | Int | X | 0 ~ n  |
+| size | 페이지 당 건수   | Int | X | 5      | 
 ```http request
-GET http://localhost:8080/api/items?pageSize=10&pageNumber=1
+GET http://localhost:8080/api/items?page=0&size=10
 ```
 
 ### Response
-| name        | description     | type    | require | example           |
-|-----------|--------|---------|---------|-------------------|
-| itemId    | 상품 ID  | Long    | O       | 1                 |
-| name      | 상품명    | String  | O       | 오버핏 반팔티           |
-| price     | 상품 가격  | Decimal | O       | 12000             |
-| thumbnail | 상품 이미지 | String  | O       | https://test.png  |
-| status    | 판매 상태  | String  | O       | SELLING, SOLD_OUT |
+| name           | description | type | require | example |
+|----------------|-------------|------|---------|---------|
+| currentPerPage | 페이지 별 데이터   | Int  | O       | 10      |
+| currentPage    | 현재 페이지      | Int  | O       | 1       |
+| totalPages     | 전체 페이지      | Int  | O       | 1 ~ n   |
+| totalElements  | 전체 데이터      | Long | O       | 1 ~ n   |
+| content          | 상품 목록 데이터   | List | O       |    |
+
+### content
+| name      | description | type    | require | example           |
+|-----------|-------------|---------|---------|-------------------|
+| itemId    | 상품 ID       | Long    | O       | 1                 |
+| category  | 카테고리 ID     | Long    | O       | 1                 |
+| name      | 상품명         | String  | O       | 오버핏 반팔티           |
+| price     | 상품 가격       | Decimal | O       | 12000             |
+| thumbnail | 상품 이미지      | String  | O       | https://test.png  |
+| status    | 판매 상태       | String  | O       | SELLING, SOLD_OUT |
+
 ```json
 // 200 Ok
-[
-  {
-    "itemId": 1,
-    "name": "오버핏 반팔티",
-    "price": 12000, 
-    "thumbnail": "https://test.png",
-    "status": "SELLING"
-  }
-]
+{
+  "currentPerPage": 10
+  "currentPage": 1
+  "totalPages": 50
+  "totalElements": 1000
+  "content": [
+    {
+      "itemId": 1,
+      "categoryId": 1
+      "name": "오버핏 반팔티",
+      "price": 12000,
+      "thumbnail": "https://test.png",
+      "status": "SELLING" 
+    }
+  ]
+}
 ```
 
 ## 인기 상품 조회
