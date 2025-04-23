@@ -1,4 +1,4 @@
-package com.ecommerce.adapter
+package com.ecommerce.adapter.usecase
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
 import com.ecommerce.adapter.out.persistence.entity.UserEntity

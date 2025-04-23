@@ -26,10 +26,10 @@ GET http://localhost:8080/api/items?page=0&size=10
 | name           | description | type | require | example |
 |----------------|-------------|------|---------|---------|
 | currentPerPage | 페이지 별 데이터   | Int  | O       | 10      |
-| currentPage    | 현재 페이지      | Int  | O       | 1       |
+| currentPage    | 현재 페이지      | Int  | O       | 0       |
 | totalPages     | 전체 페이지      | Int  | O       | 1 ~ n   |
 | totalElements  | 전체 데이터      | Long | O       | 1 ~ n   |
-| content          | 상품 목록 데이터   | List | O       |    |
+| content          | 상품 목록 데이터   | List | O       |         |
 
 ### content
 | name      | description | type    | require | example           |

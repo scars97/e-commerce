@@ -5,7 +5,6 @@ import com.ecommerce.adapter.`in`.dto.response.PointResponse
 import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Positive
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,7 +17,7 @@ import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/api/points")
-class PointController {
+class PointController{
 
     @PostMapping("")
     fun pointCharge(@Valid @RequestBody request: PointChargeRequest): ResponseEntity<PointResponse> {
