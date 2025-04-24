@@ -1,10 +1,7 @@
 package com.ecommerce.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "USER")
@@ -16,15 +13,10 @@ class UserEntity(
 
     val username: String,
 
-    var point: BigDecimal,
+    var point: BigDecimal
+): BaseEntity() {
 
-    @CreatedDate
-    val createAt: LocalDateTime,
-
-    @LastModifiedDate
-    val modifiedAt: LocalDateTime
-) {
-
-    constructor(username: String): this(0, username, BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now())
+    constructor(username: String):
+            this(0, username, BigDecimal.ZERO)
 
 }
