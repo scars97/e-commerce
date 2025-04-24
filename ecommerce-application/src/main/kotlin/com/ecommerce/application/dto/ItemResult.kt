@@ -1,6 +1,6 @@
 package com.ecommerce.application.dto
 
-import com.ecommerce.domain.Item
+import com.ecommerce.domain.item.Item
 import java.math.BigDecimal
 
 data class ItemResult(
