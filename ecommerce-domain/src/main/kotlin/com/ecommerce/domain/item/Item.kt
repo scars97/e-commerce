@@ -1,4 +1,4 @@
-package com.ecommerce.domain
+package com.ecommerce.domain.item
 
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -10,6 +10,7 @@ class Item(
     val price: BigDecimal,
     val thumbnail: String,
     val status: ItemStatus,
+    val stock: Stock,
     val createAt: LocalDateTime,
     val modifiedAt: LocalDateTime
 ) {
