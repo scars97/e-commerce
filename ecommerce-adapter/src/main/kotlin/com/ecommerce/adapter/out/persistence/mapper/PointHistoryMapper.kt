@@ -8,11 +8,9 @@ class PointHistoryMapper {
     companion object {
         fun toEntity(domain: PointHistory): PointHistoryEntity {
             return PointHistoryEntity(
-                userId =domain.userId,
-                status =domain.status,
-                amount =domain.amount,
-                createAt =domain.createAt,
-                modifiedAt =domain.modifiedAt
+                userId = domain.userId,
+                status = domain.status,
+                amount = domain.amount
             )
         }
     }

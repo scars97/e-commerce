@@ -28,9 +28,7 @@ data class UserMapper(
             return UserEntity(
                 id = domain.id,
                 username = domain.username,
-                point = domain.point,
-                createAt = domain.createAt,
-                modifiedAt = domain.modifiedAt
+                point = domain.point
             )
         }
     }
