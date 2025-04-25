@@ -7,4 +7,8 @@ interface ItemPort {
 
     fun getItemsByPage(page: Int, size: Int): Page<Item>
 
+    fun getItemsIn(itemIds: List<Long>): List<Item>
+
+    fun updateItems(items: List<Item>)
+
 }
