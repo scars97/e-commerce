@@ -1,11 +1,11 @@
 package com.ecommerce.application.service
 
 import com.ecommerce.application.dto.PointCommand
-import com.ecommerce.application.dto.PointResult
 import com.ecommerce.application.port.`in`.UserPointUseCase
 import com.ecommerce.application.port.out.PointHistoryPort
 import com.ecommerce.application.port.out.UserPort
 import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,7 +16,7 @@ class UserPointService(
 ): UserPointUseCase {
 
     @Transactional
-    override fun pointRecharge(command: PointCommand): PointResult {
+    override fun pointRecharge(command: PointCommand): User {
         val user = userPort.findUserById(command.userId)
         
         userPort.updateUser(user.pointRecharge(command.price))
@@ -25,14 +25,12 @@ class UserPointService(
             PointHistory.createAtRecharge(command.userId, command.price)
         )
         
-        return PointResult.of(user)
+        return user
     }
 
     @Transactional(readOnly = true)
-    override fun getPoint(userId: Long): PointResult {
-        return PointResult.of(
-            userPort.findUserById(userId)
-        )
+    override fun getPoint(userId: Long): User {
+        return userPort.findUserById(userId)
     }
 
 }
