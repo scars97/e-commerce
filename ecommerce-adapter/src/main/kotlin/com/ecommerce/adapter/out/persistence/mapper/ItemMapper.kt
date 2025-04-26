@@ -16,9 +16,7 @@ class ItemMapper {
                 price = entity.price,
                 thumbnail = entity.thumbnail,
                 status = entity.status,
-                stock = this.toStockDomain(entity.stock),
-                createAt = entity.createAt,
-                modifiedAt = entity.modifiedAt
+                stock = this.toStockDomain(entity.stock)
             )
         }
 

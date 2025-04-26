@@ -14,6 +14,7 @@ class PointHistoryEntity(
 
     val userId: Long,
 
+    @Enumerated(EnumType.STRING)
     val status: PointHistory.PointHistoryStatus,
 
     val amount: BigDecimal
