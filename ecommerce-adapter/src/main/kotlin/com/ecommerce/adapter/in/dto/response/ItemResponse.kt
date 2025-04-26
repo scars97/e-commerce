@@ -1,6 +1,6 @@
 package com.ecommerce.adapter.`in`.dto.response
 
-import com.ecommerce.application.dto.ItemResult
+import com.ecommerce.domain.item.Item
 import java.math.BigDecimal
 
 data class ItemResponse(
@@ -13,14 +13,14 @@ data class ItemResponse(
 ) {
 
     companion object {
-        fun of(result: ItemResult): ItemResponse {
+        fun of(item: Item): ItemResponse {
             return ItemResponse(
-                itemId = result.itemId,
-                categoryId = result.categoryId,
-                name = result.name,
-                price =result.price,
-                thumbnail = result.thumbnail,
-                status = result.status
+                itemId = item.id,
+                categoryId = item.categoryId,
+                name = item.name,
+                price =item.price,
+                thumbnail = item.thumbnail,
+                status = item.status.name
             )
         }
     }
