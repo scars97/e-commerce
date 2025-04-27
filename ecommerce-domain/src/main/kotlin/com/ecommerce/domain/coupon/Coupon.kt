@@ -1,7 +1,6 @@
 package com.ecommerce.domain.coupon
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 class Coupon(
     val id: Long,
@@ -17,7 +16,7 @@ class Coupon(
 
     fun calculateDiscount(price: BigDecimal): BigDecimal {
         return when(this.type) {
-            CouponType.RATE -> price * BigDecimal.valueOf(this.discount / 100L)
+            CouponType.RATE -> price * (BigDecimal.valueOf(this.discount).divide(BigDecimal.valueOf(100)))
             CouponType.AMOUNT -> BigDecimal.valueOf(this.discount)
         }
     }

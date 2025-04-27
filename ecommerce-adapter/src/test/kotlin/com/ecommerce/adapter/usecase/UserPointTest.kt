@@ -37,8 +37,8 @@ class UserPointTest @Autowired constructor(
         val result = sut.pointRecharge(command)
 
         // then
-        assertThat(result.userId).isEqualTo(1L)
-        assertThat(result.remainingPoint.compareTo(BigDecimal.valueOf(1000L))).isZero()
+        assertThat(result.id).isEqualTo(1L)
+        assertThat(result.point.compareTo(BigDecimal.valueOf(1000L))).isZero()
 
         val history = historyJapRepository.findById(1L).get()
         assertThat(history.userId).isEqualTo(1L)

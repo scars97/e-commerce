@@ -33,7 +33,7 @@ class ItemMapper {
         }
 
         fun toStockDomain(entity: StockEntity): Stock {
-            return Stock(entity.id, entity.quantity, entity.createAt, entity.modifiedAt)
+            return Stock(entity.id, entity.quantity)
         }
 
         fun toStockEntity(domain: Stock): StockEntity {
