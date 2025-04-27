@@ -29,7 +29,7 @@ class Order(
         val quantityOfItem = this.orderItems.associate { it.itemId to BigDecimal.valueOf(it.quantity) }
 
         items.forEach {
-            this.originPrice.plus(it.price * quantityOfItem[it.id]!!)
+            this.originPrice += (it.price * quantityOfItem[it.id]!!)
         }
 
         this.totalPrice = this.originPrice

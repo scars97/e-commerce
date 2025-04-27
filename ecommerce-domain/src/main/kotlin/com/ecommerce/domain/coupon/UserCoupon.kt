@@ -1,5 +1,7 @@
 package com.ecommerce.domain.coupon
 
+import com.ecommerce.common.exception.CustomException
+import com.ecommerce.common.exception.ErrorCode
 import java.time.LocalDateTime
 
 class UserCoupon(
@@ -17,10 +19,10 @@ class UserCoupon(
 
     fun validate() {
         if (this.status != UserCouponStatus.AVAILABLE) {
-            throw IllegalStateException("사용할 수 없는 쿠폰")
+            throw CustomException(ErrorCode.INVALID_COUPON)
         }
         if (this.expireAt.isBefore(LocalDateTime.now())) {
-            throw IllegalStateException("만료된 쿠폰")
+            throw CustomException(ErrorCode.INVALID_COUPON)
         }
     }
 
