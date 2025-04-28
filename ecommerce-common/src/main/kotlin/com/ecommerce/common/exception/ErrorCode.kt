@@ -25,6 +25,9 @@ enum class ErrorCode(
     INSUFFICIENT_POINT(HttpStatus.UNPROCESSABLE_ENTITY, "잔액이 부족합니다."),
 
     // 사용자
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+
+    // 공통
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
 
 }
