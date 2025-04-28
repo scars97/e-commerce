@@ -26,26 +26,20 @@ class PaymentService(
     override fun pay(paymentCommand: PaymentCommand): Payment {
         val payment = paymentCommand.toPayment()
 
-        // 사용자, 주문 정보 검증
         val user = userPort.findUserById(payment.userId)
         val order = orderPort.findOrderById(payment.orderId)
         payment.priceEqualTo(order.totalPrice)
         
-        // 포인트 사용
         userPort.updateUser(user.pointUse(payment.price))
 
-        // 포인트 내역 저장
         pointHistoryPort.saveHistory(
             PointHistory.createAtUsed(user.id, payment.price)
         )
 
-        // 주문 상태 변경 -> PAID
         orderPort.commandOrder(order.paid())
 
-        // 주문 정보 -> 데이터 플랫폼 전달
         eventPublisher.publishEvent(SendOrderInfoEvent(order))
 
-        // 결제 생성
         return paymentPort.pay(payment)
     }
 
