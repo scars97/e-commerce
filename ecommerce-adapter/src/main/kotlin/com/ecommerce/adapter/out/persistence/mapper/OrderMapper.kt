@@ -10,6 +10,7 @@ class OrderMapper {
     companion object {
         fun toOrderEntity(domain: Order): OrderEntity {
             return OrderEntity(
+                id = domain.id ?:0,
                 couponId = domain.couponId,
                 userId = domain.userId,
                 orderItems = domain.orderItems.map { toOrderItemEntity(it) },

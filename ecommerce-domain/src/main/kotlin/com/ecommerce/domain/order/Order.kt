@@ -5,7 +5,7 @@ import com.ecommerce.domain.item.Item
 import java.math.BigDecimal
 
 class Order(
-    val id: Long,
+    val id: Long?,
     val couponId: Long?,
     val userId: Long,
     val orderItems: List<OrderItem> = listOf(),
@@ -39,6 +39,11 @@ class Order(
         this.discountPrice = coupon.calculateDiscount(this.originPrice)
 
         this.totalPrice = this.originPrice - this.discountPrice
+    }
+
+    fun paid(): Order {
+        this.status = OrderStatus.PAID
+        return this
     }
 
 }
