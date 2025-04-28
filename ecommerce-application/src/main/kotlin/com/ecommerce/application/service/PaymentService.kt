@@ -1,6 +1,7 @@
 package com.ecommerce.application.service
 
 import com.ecommerce.application.dto.PaymentCommand
+import com.ecommerce.domain.event.OrderInfoEvent
 import com.ecommerce.application.port.`in`.PaymentUseCase
 import com.ecommerce.application.port.out.OrderPort
 import com.ecommerce.application.port.out.PaymentPort
@@ -8,6 +9,7 @@ import com.ecommerce.application.port.out.PointHistoryPort
 import com.ecommerce.application.port.out.UserPort
 import com.ecommerce.domain.Payment
 import com.ecommerce.domain.PointHistory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,7 +18,8 @@ class PaymentService(
     private val paymentPort: PaymentPort,
     private val userPort: UserPort,
     private val pointHistoryPort: PointHistoryPort,
-    private val orderPort: OrderPort
+    private val orderPort: OrderPort,
+    private val eventPublisher: ApplicationEventPublisher
 ): PaymentUseCase {
 
     @Transactional
@@ -39,7 +42,8 @@ class PaymentService(
         // 주문 상태 변경 -> PAID
         orderPort.commandOrder(order.paid())
 
-        // TODO 주문 정보 -> 데이터 플랫폼 전달
+        // 주문 정보 -> 데이터 플랫폼 전달
+        eventPublisher.publishEvent(OrderInfoEvent(order))
 
         // 결제 생성
         return paymentPort.pay(payment)
