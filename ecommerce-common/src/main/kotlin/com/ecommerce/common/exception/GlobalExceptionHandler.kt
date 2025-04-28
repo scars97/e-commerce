@@ -30,4 +30,11 @@ class GlobalExceptionHandler {
         return ErrorResponse.of(e.errorCode)
     }
 
+    @ExceptionHandler(Exception::class)
+    fun exceptionHandle(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error("Exception occurred : ${e.message}")
+
+        return ErrorResponse.of(ErrorCode.SERVER_ERROR)
+    }
+
 }
