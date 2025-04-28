@@ -11,7 +11,7 @@ class OrderPersistenceAdapter(
     private val jpaRepository: OrderJpaRepository
 ): OrderPort {
 
-    override fun createOrder(order: Order): Order {
+    override fun commandOrder(order: Order): Order {
         val orderEntity = OrderMapper.toOrderEntity(order)
 
         val saveOrder = jpaRepository.save(orderEntity)

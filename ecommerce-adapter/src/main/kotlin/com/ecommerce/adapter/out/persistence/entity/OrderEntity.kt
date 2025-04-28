@@ -27,16 +27,4 @@ class OrderEntity(
     var totalPrice: BigDecimal = BigDecimal.ZERO,
 
     var status: Order.OrderStatus
-): BaseEntity() {
-
-    constructor(
-        couponId: Long?,
-        userId: Long,
-        orderItems: List<OrderItemEntity>,
-        originPrice: BigDecimal,
-        discountPrice: BigDecimal,
-        totalPrice: BigDecimal,
-        status: Order.OrderStatus
-    ): this(0, couponId, userId, orderItems, originPrice, discountPrice, totalPrice, status)
-
-}
+): BaseEntity()

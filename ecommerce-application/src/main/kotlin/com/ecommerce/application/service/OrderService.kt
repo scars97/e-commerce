@@ -43,7 +43,7 @@ class OrderService(
         }
         
         // 주문 저장
-        return orderPort.createOrder(order)
+        return orderPort.commandOrder(order)
     }
 
 }

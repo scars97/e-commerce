@@ -4,6 +4,6 @@ import com.ecommerce.domain.order.Order
 
 interface OrderPort {
 
-    fun createOrder(order: Order): Order
+    fun commandOrder(order: Order): Order
 
 }
