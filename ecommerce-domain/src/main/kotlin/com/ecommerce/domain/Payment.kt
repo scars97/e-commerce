@@ -18,8 +18,8 @@ class Payment(
 
     constructor(orderId: Long, userId: Long, price: BigDecimal): this(0, orderId, userId, price)
 
-    fun validatePrice(totalPrice: BigDecimal) {
-        if (this.price != totalPrice) {
+    fun priceEqualTo(requestPrice: BigDecimal) {
+        if (this.price != requestPrice) {
             throw CustomException(ErrorCode.INVALID_PRICE)
         }
     }

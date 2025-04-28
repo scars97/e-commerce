@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.math.BigDecimal
 
@@ -64,6 +65,20 @@ class OrderTest {
                 assertThat(order.totalPrice).isEqualTo(expectTotalPrice)
             }
         )
+    }
+
+    @DisplayName("주문이 결제 되면 주문 상태가 PAID 로 변경된다.")
+    @Test
+    fun whenOrderPayment_thenOrderStatusIsPaid() {
+        // given
+        val orderItem = items.map { OrderItem(it.id, 2L) }
+        val order = Order(1L, 1L, orderItem)
+
+        // when
+        order.paid()
+
+        // then
+        assertThat(order.status).isEqualTo(Order.OrderStatus.PAID)
     }
 
 }
