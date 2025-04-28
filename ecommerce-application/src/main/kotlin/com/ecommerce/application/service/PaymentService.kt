@@ -29,7 +29,7 @@ class PaymentService(
         // 사용자, 주문 정보 검증
         val user = userPort.findUserById(payment.userId)
         val order = orderPort.findOrderById(payment.orderId)
-        payment.validatePrice(order.totalPrice)
+        payment.priceEqualTo(order.totalPrice)
         
         // 포인트 사용
         userPort.updateUser(user.pointUse(payment.price))
