@@ -4,6 +4,6 @@ import com.ecommerce.domain.PointHistory
 
 interface PointHistoryPort {
 
-    fun saveRechargeHistory(pointHistory: PointHistory)
+    fun saveHistory(pointHistory: PointHistory)
 
 }

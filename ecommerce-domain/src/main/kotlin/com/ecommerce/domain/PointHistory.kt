@@ -8,25 +8,23 @@ class PointHistory(
     val userId: Long,
     val status: PointHistoryStatus,
     val amount: BigDecimal,
-    val createAt: LocalDateTime,
-    val modifiedAt: LocalDateTime
+    val createAt: LocalDateTime = LocalDateTime.now(),
+    val modifiedAt: LocalDateTime = LocalDateTime.now()
 ) {
 
     enum class PointHistoryStatus {
         RECHARGE, USED
     }
 
-    constructor(userId: Long, status: PointHistoryStatus, amount: BigDecimal, createAt: LocalDateTime, modifiedAt: LocalDateTime)
-            :this(0, userId, status, amount, createAt, modifiedAt)
+    constructor(userId: Long, status: PointHistoryStatus, amount: BigDecimal)
+            :this(0, userId, status, amount)
 
     companion object {
         fun createAtRecharge(userId: Long, price: BigDecimal): PointHistory {
             return PointHistory(
                 userId,
                 PointHistoryStatus.RECHARGE,
-                price,
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                price
             )
         }
 
@@ -34,9 +32,7 @@ class PointHistory(
             return PointHistory(
                 userId,
                 PointHistoryStatus.USED,
-                price,
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                price
             )
         }
     }
