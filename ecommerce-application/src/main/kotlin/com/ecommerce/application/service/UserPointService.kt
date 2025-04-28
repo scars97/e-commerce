@@ -21,7 +21,7 @@ class UserPointService(
         
         userPort.updateUser(user.pointRecharge(command.price))
 
-        pointHistoryPort.saveRechargeHistory(
+        pointHistoryPort.saveHistory(
             PointHistory.createAtRecharge(command.userId, command.price)
         )
         

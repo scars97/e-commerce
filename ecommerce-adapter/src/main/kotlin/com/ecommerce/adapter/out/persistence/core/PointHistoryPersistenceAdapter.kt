@@ -11,7 +11,7 @@ class PointHistoryPersistenceAdapter(
     private val jpaRepository: PointHistoryJapRepository
 ): PointHistoryPort {
 
-    override fun saveRechargeHistory(pointHistory: PointHistory) {
+    override fun saveHistory(pointHistory: PointHistory) {
         jpaRepository.save(
             PointHistoryMapper.toEntity(pointHistory)
         )
