@@ -1,7 +1,7 @@
 package com.ecommerce.application.service
 
 import com.ecommerce.application.dto.PaymentCommand
-import com.ecommerce.domain.event.OrderInfoEvent
+import com.ecommerce.domain.event.SendOrderInfoEvent
 import com.ecommerce.application.port.`in`.PaymentUseCase
 import com.ecommerce.application.port.out.OrderPort
 import com.ecommerce.application.port.out.PaymentPort
@@ -43,7 +43,7 @@ class PaymentService(
         orderPort.commandOrder(order.paid())
 
         // 주문 정보 -> 데이터 플랫폼 전달
-        eventPublisher.publishEvent(OrderInfoEvent(order))
+        eventPublisher.publishEvent(SendOrderInfoEvent(order))
 
         // 결제 생성
         return paymentPort.pay(payment)

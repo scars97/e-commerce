@@ -1,9 +1,9 @@
 package com.ecommerce.application.port.out
 
-import com.ecommerce.domain.event.OrderInfoEvent
+import com.ecommerce.domain.event.SendOrderInfoEvent
 
 interface DataPlatformPort {
 
-    fun sendOrderInfo(event: OrderInfoEvent)
+    fun sendOrderInfo(event: SendOrderInfoEvent)
 
 }
