@@ -3,6 +3,8 @@ package com.ecommerce.adapter.out.persistence.core
 import com.ecommerce.adapter.out.persistence.mapper.OrderMapper
 import com.ecommerce.adapter.out.persistence.repository.OrderJpaRepository
 import com.ecommerce.application.port.out.OrderPort
+import com.ecommerce.common.exception.CustomException
+import com.ecommerce.common.exception.ErrorCode
 import com.ecommerce.domain.order.Order
 import org.springframework.stereotype.Repository
 
@@ -17,6 +19,12 @@ class OrderPersistenceAdapter(
         val saveOrder = jpaRepository.save(orderEntity)
 
         return OrderMapper.toOrder(saveOrder)
+    }
+
+    override fun findOrderById(orderId: Long): Order {
+        val order = jpaRepository.findById(orderId).orElseThrow { CustomException(ErrorCode.ORDER_NOT_FOUND) }
+
+        return OrderMapper.toOrder(order)
     }
 
 }
