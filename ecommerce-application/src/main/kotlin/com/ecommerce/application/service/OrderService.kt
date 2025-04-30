@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class OrderService(
-    private val orderPort: OrderPort
+    private val orderPort: OrderPort,
     private val itemPort: ItemPort,
     private val couponPort: CouponPort
 ): OrderUseCase {
