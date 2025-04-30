@@ -89,4 +89,29 @@ class CouponTest {
         assertThat(result.usedAt).isNotNull()
     }
 
+    @DisplayName("쿠폰 수량 차감 시나리오")
+    @TestFactory
+    fun deductCouponQuantity(): List<DynamicTest> {
+        // given
+        val originQuantity = 1L
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, originQuantity)
+
+        return listOf(
+            DynamicTest.dynamicTest("쿠폰 발급 시, 쿠폰 수량이 차감된다.") {
+                // when
+                coupon.deduct()
+
+                // then
+                val expectQuantity = originQuantity - 1L
+                assertThat(coupon.quantity).isEqualTo(expectQuantity)
+            },
+            DynamicTest.dynamicTest("쿠폰이 모두 소진된 경우, 예외가 발생한다.") {
+                // when & then
+                assertThatThrownBy { coupon.deduct() }
+                    .isInstanceOf(CustomException::class.java)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPONS_ARE_EXHAUSTED)
+            }
+        )
+    }
+
 }
