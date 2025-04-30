@@ -31,7 +31,7 @@ class OrderService(
 
         order.calculateOriginPrice(items)
 
-        if (order.couponId != null) {
+        order.couponId?.let {
             val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
             couponPort.use(userCoupon.use())
 

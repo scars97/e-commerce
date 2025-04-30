@@ -40,7 +40,7 @@ class PaymentService(
 
         eventPublisher.publishEvent(SendOrderInfoEvent(order))
 
-        return paymentPort.pay(payment)
+        return paymentPort.savePayment(payment)
     }
 
 }

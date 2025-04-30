@@ -14,7 +14,7 @@ class CouponEntity(
     val title: String,
 
     @Enumerated(EnumType.STRING)
-    val type: Coupon.CouponType,
+    val type: Coupon.DiscountType,
 
     val discount: Long,
 

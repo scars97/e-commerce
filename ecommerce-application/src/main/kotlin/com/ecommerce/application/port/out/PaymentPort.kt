@@ -4,6 +4,6 @@ import com.ecommerce.domain.Payment
 
 interface PaymentPort {
 
-    fun pay(payment: Payment): Payment
+    fun savePayment(payment: Payment): Payment
 
 }
