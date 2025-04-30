@@ -33,7 +33,7 @@ class OrderService(
 
         order.couponId?.let {
             val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
-            couponPort.use(userCoupon.use())
+            couponPort.commandUserCoupon(userCoupon.use())
 
             order.calculateDiscountPrice(userCoupon.coupon)
         }

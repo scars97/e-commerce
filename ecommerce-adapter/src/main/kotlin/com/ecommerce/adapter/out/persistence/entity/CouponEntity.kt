@@ -18,6 +18,7 @@ class CouponEntity(
 
     val discount: Long,
 
-    val expirationDay: Int
-): BaseEntity() {
-}
+    val expirationDay: Int,
+
+    var quantity: Long
+): BaseEntity()

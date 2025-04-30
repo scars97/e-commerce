@@ -15,6 +15,7 @@ class CouponMapper {
                 type = entity.type,
                 discount = entity.discount,
                 expirationDay = entity.expirationDay,
+                quantity = entity.quantity
             )
         }
 
@@ -24,7 +25,8 @@ class CouponMapper {
                 title = domain.title,
                 type = domain.type,
                 discount = domain.discount,
-                expirationDay = domain.expirationDay
+                expirationDay = domain.expirationDay,
+                quantity = domain.quantity
             )
         }
 
@@ -41,7 +43,7 @@ class CouponMapper {
 
         fun toUserCouponEntity(domain: UserCoupon): UserCouponEntity {
             return UserCouponEntity(
-                id = domain.id!!,
+                id = domain.id,
                 userId = domain.userId,
                 coupon = toCouponEntity(domain.coupon),
                 status = domain.status,

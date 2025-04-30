@@ -17,6 +17,19 @@ class UserCoupon(
         USED, AVAILABLE, EXPIRED
     }
 
+    companion object {
+        fun register(userId: Long, coupon: Coupon): UserCoupon {
+            return UserCoupon(
+                id = null,
+                userId = userId,
+                coupon = coupon,
+                status = UserCouponStatus.AVAILABLE,
+                expireAt = LocalDateTime.now().plusDays(coupon.expirationDay.toLong()),
+                usedAt = null
+            )
+        }
+    }
+
     fun validate() {
         if (this.status != UserCouponStatus.AVAILABLE) {
             throw CustomException(ErrorCode.INVALID_COUPON)

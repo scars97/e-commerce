@@ -22,11 +22,11 @@ class CouponTest {
         fun discountTestCases(): Stream<TestCase> {
             return Stream.of(
                 TestCase(
-                    Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30),
+                    Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L),
                     BigDecimal.valueOf(1000L)
                 ),
                 TestCase(
-                    Coupon(2L, "쿠폰 B", Coupon.DiscountType.AMOUNT, 3000L, 30),
+                    Coupon(2L, "쿠폰 B", Coupon.DiscountType.AMOUNT, 3000L, 30, 10L),
                     BigDecimal.valueOf(3000L)
                 )
             )
@@ -56,7 +56,7 @@ class CouponTest {
     @DisplayName("쿠폰 검증 시나리오")
     @TestFactory
     fun validateCoupon(): List<DynamicTest> {
-        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30)
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
 
         return listOf(
             DynamicTest.dynamicTest("사용 가능 상태가 아닌 경우 예외 발생") {
@@ -78,7 +78,7 @@ class CouponTest {
     @Test
     fun whenRequestUse_thenStatusIsUsedAndInputUseTime() {
         // given
-        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30)
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
         val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().plusDays(1), null)
 
         // when
