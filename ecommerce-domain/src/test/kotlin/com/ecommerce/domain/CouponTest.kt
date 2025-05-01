@@ -60,13 +60,13 @@ class CouponTest {
 
         return listOf(
             DynamicTest.dynamicTest("사용 가능 상태가 아닌 경우 예외 발생") {
-                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.USED, LocalDateTime.now().plusDays(1), LocalDateTime.now())
+                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.USED, LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now())
                 assertThatThrownBy { userCoupon.validate() }
                     .isInstanceOf(CustomException::class.java)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_COUPON)
             },
             DynamicTest.dynamicTest("사용 가능 상태이더라도 만료 시간이 지난 경우 예외 발생") {
-                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().minusDays(1), null)
+                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), null)
                 assertThatThrownBy { userCoupon.validate() }
                     .isInstanceOf(CustomException::class.java)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_COUPON)
@@ -79,7 +79,7 @@ class CouponTest {
     fun whenRequestUse_thenStatusIsUsedAndInputUseTime() {
         // given
         val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
-        val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().plusDays(1), null)
+        val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(1), null)
 
         // when
         val result = userCoupon.use()

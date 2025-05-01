@@ -36,6 +36,7 @@ class CouponMapper {
                 userId = entity.userId,
                 coupon = toCoupon(entity.coupon),
                 status = entity.status,
+                issuedAt = entity.issuedAt,
                 expireAt = entity.expireAt,
                 usedAt = entity.usedAt
             )
@@ -47,6 +48,7 @@ class CouponMapper {
                 userId = domain.userId,
                 coupon = toCouponEntity(domain.coupon),
                 status = domain.status,
+                issuedAt = domain.issuedAt,
                 expireAt = domain.expireAt,
                 usedAt = domain.usedAt
             )

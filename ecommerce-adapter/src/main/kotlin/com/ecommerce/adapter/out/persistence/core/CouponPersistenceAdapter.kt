@@ -38,9 +38,11 @@ class CouponPersistenceAdapter(
         return CouponMapper.toUserCoupon(userCoupon!!)
     }
 
-    override fun commandUserCoupon(userCoupon: UserCoupon) {
+    override fun commandUserCoupon(userCoupon: UserCoupon): UserCoupon {
         val userCouponEntity = CouponMapper.toUserCouponEntity(userCoupon)
 
-        userCouponJpaRepository.save(userCouponEntity)
+        val saveUserCoupon = userCouponJpaRepository.save(userCouponEntity)
+
+        return CouponMapper.toUserCoupon(saveUserCoupon)
     }
 }

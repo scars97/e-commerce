@@ -9,6 +9,7 @@ class UserCoupon(
     val userId: Long,
     val coupon: Coupon,
     var status: UserCouponStatus,
+    val issuedAt: LocalDateTime,
     val expireAt: LocalDateTime,
     var usedAt: LocalDateTime?
 ) {
@@ -24,6 +25,7 @@ class UserCoupon(
                 userId = userId,
                 coupon = coupon,
                 status = UserCouponStatus.AVAILABLE,
+                issuedAt = LocalDateTime.now(),
                 expireAt = LocalDateTime.now().plusDays(coupon.expirationDay.toLong()),
                 usedAt = null
             )
