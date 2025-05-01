@@ -68,11 +68,24 @@ GET http://localhost:8080/api/items?page=0&size=10
 GET http://localhost:8080/api/items/popular
 ```
 
+### Query String Parameter
+| name   | description | type | require | example  |
+|--------|-------------|------|-------|----------|
+| period | 기간          | Long | X | 3, 7, 30 | 
+```http request
+GET http://localhost:8080/api/items/popular?period=3
+```
+
 ### Response
+| name            | description | type | require | example           |
+|-----------------|-------------|------|---------|-------------------|
+| rank            | 인기 순위       | Int  | O       | 1 ~ n             |
+| cumulativeSales | 누적 판매량      | Long | O       | 1 ~ n             |
+| item            | 상품 정보       | Item | O       |              |
+
+### Item
 | name            | description | type    | require | example           |
 |-----------------|-------------|---------|---------|-------------------|
-| rank            | 인기 순위       | Int     | O       | 1 ~ n             |
-| cumulativeSales | 누적 판매량      | Long    | O       | 1 ~ n             |
 | itemId          | 상품 ID       | Long    | O       | 1                 |
 | name            | 상품명         | String  | O       | 오버핏 반팔티           |
 | price           | 상품 가격       | Decimal | O       | 12000             |
@@ -83,13 +96,15 @@ GET http://localhost:8080/api/items/popular
 // 200 Ok
 [
   {
-    "rank": 1, 
-    "cumulativeSales": 25000
-    "itemId": 1, 
-    "name": "오버핏 반팔티", 
-    "price": 12000, 
-    "thumbnail": "https://test.png", 
-    "status": "SELLING"
+    "rank": 1,
+    "cumulativeSales": 25000,
+    "item": {
+      "itemId": 1,
+      "name": "오버핏 반팔티",
+      "price": 12000,
+      "thumbnail": "https://test.png",
+      "status": "SELLING"
+    }
   }
 ]
 ```
@@ -133,24 +148,43 @@ Content-Type: application/json
 ```
 
 ### Response
-| name       | description | type    | require | example               |
-|------------|-------------|---------|---------|-----------------------|
-| orderId    | 주문 ID       | Long    | O       | 1                     |
-| userId     | 사용자 ID      | Long    | O       | 1                     |
-| couponId   | 쿠폰 ID       | Long    | X       | 1 or null             |
-| disCount   | 할인 금액       | Decimal | X       | 1000 or 0             |
-| totalPrice | 최종 금액       | Decimal | O       | 9000                  |
-| status     | 주문 상태       | String  | O       | ORDERED, PAID, CANCEL |
+| name          | description | type    | require | example               |
+|---------------|-------------|---------|---------|-----------------------|
+| orderId       | 주문 ID       | Long    | O       | 1                     |
+| couponId      | 쿠폰 ID       | Long    | X       | 1 or null             |
+| userId        | 사용자 ID      | Long    | O       | 1                     |
+| originPrice   | 주문 금액       | Decimal    | O       | 12000                 |
+| discountPrice | 할인 금액       | Decimal | X       | 3000                  |
+| totalPrice    | 최종 금액       | Decimal | O       | 9000                  |
+| status        | 주문 상태       | String  | O       | ORDERED, PAID, CANCEL |
+| orderItems    | 주문 상품 정보    | List    | O       |                       |
+
+### orderItems
+| name     | description | type    | require | example |
+|----------|-------------|---------|---------|---------|
+| itemId   | 상품 ID       | Long    | O       | 1       |
+| quantity | 주문 수량       | Long    | O       | 1 ~ n   |
 
 ```json
 // 201 Created
 {
   "orderId": 1,
-  "userId": 1,
   "couponId": 1,
-  "disCount": 3000,
+  "userId": 1,
+  "originPrice": 12000,
+  "discountPrice": 3000,
   "totalPrice": 9000,
-  "status": "ORDERED"
+  "status": "ORDERED",
+  "orderItems": [
+    {
+      "itemId": 1,
+      "quantity": 2
+    },
+    {
+      "itemId": 2,
+      "quantity": 3
+    }
+  ]
 }
 ```
 
@@ -252,12 +286,14 @@ Content-Type: application/json
 ```
 
 ### Request Body
-| name   | description | type | require | example |
-|--------|-------------|------|---------|---------|
-| userId | 사용자 ID      | Long | O       | 1       |
+| name     | description | type | require | example |
+|----------|-------------|------|---------|---------|
+| couponId | 쿠폰 ID       | Long | O       | 1       |
+| userId   | 사용자 ID      | Long | O       | 1       |
 
 ```json
 {
+  "couponId": 1
   "userId": 1
 }
 ```
@@ -268,7 +304,7 @@ Content-Type: application/json
 | couponId      | 쿠폰 ID       | Long          | O       | 1                    |
 | title         | 쿠폰명         | varchar       | O       | 선착순 쿠폰               |
 | type          | 할인 쿠폰 종류    | String        | O       | RATE(%), AMOUNT(won) |
-| discount      | 할인 금액       | Decimal       | O       | 30, 3000             |
+| discount      | 할인 금액       | Long          | O       | 30, 3000             |
 | expirationDay | 유효 일수       | Int           | O       | 30                   |
 | issuedAt      | 발급 일자       | LocalDateTime | O       | 2025-04-01 16:00:00  |
 | expireAt      | 만료 기간       | LocalDateTime | O       | 2025-04-30 16:00:00  |
@@ -364,13 +400,13 @@ GET http://localhost:8080/api/points/1
 | name   | description | type    | require | example |
 |--------|-------------|---------|---------|---------|
 | userId | 사용자 ID      | Long    | O       | 1       |
-| point  | 포인트 잔액      | Decimal | O       | 15000   |
+| remainingPoint  | 포인트 잔액      | Decimal | O       | 15000   |
 
 ```json
 // 200 Ok
 {
   "userId": 1,
-  "point": 15000
+  "remainingPoint": 15000
 }
 ```
 
