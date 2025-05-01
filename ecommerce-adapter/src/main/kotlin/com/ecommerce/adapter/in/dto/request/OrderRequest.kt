@@ -1,5 +1,7 @@
 package com.ecommerce.adapter.`in`.dto.request
 
+import com.ecommerce.application.dto.OrderCommand
+import com.ecommerce.domain.order.OrderItem
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
@@ -16,6 +18,14 @@ data class OrderRequest(
     val orderItems: List<OrderItemRequest>
 ) {
 
+    fun toOrderCommand(): OrderCommand {
+        return OrderCommand(
+            userId = this.userId,
+            couponId = this.couponId,
+            orderItems = orderItems.map { it.toOrderItemCommand() }.toList()
+        )
+    }
+
     data class OrderItemRequest(
         @field:NotNull(message = "상품 ID는 필수 값 입니다.")
         @field:Positive(message = "상품 ID 값은 0보다 커야 합니다.")
@@ -23,6 +33,13 @@ data class OrderRequest(
         @field:NotNull(message = "주문 수량은 필수 값 입니다.")
         @field:Positive(message = "주문 수량은 0보다 커야 합니다.")
         val quantity: Long
-    )
+    ) {
+        fun toOrderItemCommand(): OrderCommand.OrderItemCommand {
+            return OrderCommand.OrderItemCommand(
+                itemId = this.itemId,
+                quantity = this.quantity
+            )
+        }
+    }
 
 }
