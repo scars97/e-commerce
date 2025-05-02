@@ -11,7 +11,7 @@ class PaymentPersistenceAdapter(
     private val jpaRepository: PaymentJpaRepository
 ): PaymentPort {
 
-    override fun pay(payment: Payment): Payment {
+    override fun savePayment(payment: Payment): Payment {
         val savePayment = jpaRepository.save(
             PaymentMapper.toPaymentEntity(payment)
         )

@@ -9,12 +9,27 @@ class UserCoupon(
     val userId: Long,
     val coupon: Coupon,
     var status: UserCouponStatus,
+    val issuedAt: LocalDateTime,
     val expireAt: LocalDateTime,
     var usedAt: LocalDateTime?
 ) {
 
     enum class UserCouponStatus {
         USED, AVAILABLE, EXPIRED
+    }
+
+    companion object {
+        fun register(userId: Long, coupon: Coupon): UserCoupon {
+            return UserCoupon(
+                id = null,
+                userId = userId,
+                coupon = coupon,
+                status = UserCouponStatus.AVAILABLE,
+                issuedAt = LocalDateTime.now(),
+                expireAt = LocalDateTime.now().plusDays(coupon.expirationDay.toLong()),
+                usedAt = null
+            )
+        }
     }
 
     fun validate() {

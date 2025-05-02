@@ -20,6 +20,8 @@ class UserCouponEntity(
     @Enumerated(EnumType.STRING)
     val status: UserCoupon.UserCouponStatus,
 
+    val issuedAt: LocalDateTime,
+
     val expireAt: LocalDateTime,
 
     val usedAt: LocalDateTime?

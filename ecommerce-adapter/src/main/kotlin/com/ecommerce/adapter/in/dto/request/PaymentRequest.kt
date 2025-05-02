@@ -1,5 +1,6 @@
 package com.ecommerce.adapter.`in`.dto.request
 
+import com.ecommerce.application.dto.PaymentCommand
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import java.math.BigDecimal
@@ -14,4 +15,14 @@ data class PaymentRequest(
     @field:NotNull(message = "결제 금액은 필수 값 입니다.")
     @field:Positive(message = "결제 금액은 0보다 커야 합니다.")
     val price: BigDecimal
-)
+) {
+
+    fun toCommand(): PaymentCommand {
+        return PaymentCommand(
+            userId = this.userId,
+            orderId = this.orderId,
+            price = this.price
+        )
+    }
+
+}

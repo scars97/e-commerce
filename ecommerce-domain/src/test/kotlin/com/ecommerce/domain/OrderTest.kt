@@ -49,7 +49,7 @@ class OrderTest {
                 assertThat(order.originPrice).isEqualTo(order.totalPrice)
             },
             DynamicTest.dynamicTest("할인 금액 계산") {
-                val coupon = Coupon(1L, "쿠폰 A", Coupon.CouponType.RATE, 10L, 30)
+                val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
 
                 // when
                 order.calculateDiscountPrice(coupon)

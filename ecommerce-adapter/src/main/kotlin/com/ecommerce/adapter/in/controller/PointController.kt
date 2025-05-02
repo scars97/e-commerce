@@ -2,8 +2,7 @@ package com.ecommerce.adapter.`in`.controller
 
 import com.ecommerce.adapter.`in`.dto.request.PointChargeRequest
 import com.ecommerce.adapter.`in`.dto.response.PointResponse
-import com.ecommerce.common.exception.CustomException
-import com.ecommerce.common.exception.ErrorCode
+import com.ecommerce.application.port.`in`.UserPointUseCase
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,27 +12,28 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/api/points")
-class PointController{
+class PointController(
+    private val userPointUseCase: UserPointUseCase
+){
 
     @PostMapping("")
     fun pointCharge(@Valid @RequestBody request: PointChargeRequest): ResponseEntity<PointResponse> {
-        if (request.userId == 100L) throw CustomException(ErrorCode.USER_NOT_FOUND)
+        val userPoint = userPointUseCase.pointRecharge(request.toCommand())
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            PointResponse(1L, BigDecimal("15000"))
+            PointResponse(userPoint.id, userPoint.point)
         )
     }
 
     @GetMapping("/{userId}")
     fun getPoint(@PathVariable userId: Long): ResponseEntity<PointResponse> {
-        if (userId == 100L) throw CustomException(ErrorCode.USER_NOT_FOUND)
+        val userPoint = userPointUseCase.getPoint(userId)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            PointResponse(1L, BigDecimal("15000"))
+            PointResponse(userPoint.id, userPoint.point)
         )
     }
 

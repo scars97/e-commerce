@@ -4,7 +4,6 @@ import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode
 import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest
@@ -23,11 +22,11 @@ class CouponTest {
         fun discountTestCases(): Stream<TestCase> {
             return Stream.of(
                 TestCase(
-                    Coupon(1L, "쿠폰 A", Coupon.CouponType.RATE, 10L, 30),
+                    Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L),
                     BigDecimal.valueOf(1000L)
                 ),
                 TestCase(
-                    Coupon(2L, "쿠폰 B", Coupon.CouponType.AMOUNT, 3000L, 30),
+                    Coupon(2L, "쿠폰 B", Coupon.DiscountType.AMOUNT, 3000L, 30, 10L),
                     BigDecimal.valueOf(3000L)
                 )
             )
@@ -57,17 +56,17 @@ class CouponTest {
     @DisplayName("쿠폰 검증 시나리오")
     @TestFactory
     fun validateCoupon(): List<DynamicTest> {
-        val coupon = Coupon(1L, "쿠폰 A", Coupon.CouponType.RATE, 10L, 30)
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
 
         return listOf(
             DynamicTest.dynamicTest("사용 가능 상태가 아닌 경우 예외 발생") {
-                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.USED, LocalDateTime.now().plusDays(1), LocalDateTime.now())
+                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.USED, LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now())
                 assertThatThrownBy { userCoupon.validate() }
                     .isInstanceOf(CustomException::class.java)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_COUPON)
             },
             DynamicTest.dynamicTest("사용 가능 상태이더라도 만료 시간이 지난 경우 예외 발생") {
-                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().minusDays(1), null)
+                val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), null)
                 assertThatThrownBy { userCoupon.validate() }
                     .isInstanceOf(CustomException::class.java)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_COUPON)
@@ -79,8 +78,8 @@ class CouponTest {
     @Test
     fun whenRequestUse_thenStatusIsUsedAndInputUseTime() {
         // given
-        val coupon = Coupon(1L, "쿠폰 A", Coupon.CouponType.RATE, 10L, 30)
-        val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now().plusDays(1), null)
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
+        val userCoupon = UserCoupon(1L, 1L, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(1), null)
 
         // when
         val result = userCoupon.use()
@@ -88,6 +87,31 @@ class CouponTest {
         // then
         assertThat(result.status).isEqualTo(UserCoupon.UserCouponStatus.USED)
         assertThat(result.usedAt).isNotNull()
+    }
+
+    @DisplayName("쿠폰 수량 차감 시나리오")
+    @TestFactory
+    fun deductCouponQuantity(): List<DynamicTest> {
+        // given
+        val originQuantity = 1L
+        val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, originQuantity)
+
+        return listOf(
+            DynamicTest.dynamicTest("쿠폰 발급 시, 쿠폰 수량이 차감된다.") {
+                // when
+                coupon.deduct()
+
+                // then
+                val expectQuantity = originQuantity - 1L
+                assertThat(coupon.quantity).isEqualTo(expectQuantity)
+            },
+            DynamicTest.dynamicTest("쿠폰이 모두 소진된 경우, 예외가 발생한다.") {
+                // when & then
+                assertThatThrownBy { coupon.deduct() }
+                    .isInstanceOf(CustomException::class.java)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPONS_ARE_EXHAUSTED)
+            }
+        )
     }
 
 }

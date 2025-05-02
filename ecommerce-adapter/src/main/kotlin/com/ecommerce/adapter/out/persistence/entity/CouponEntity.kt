@@ -14,10 +14,11 @@ class CouponEntity(
     val title: String,
 
     @Enumerated(EnumType.STRING)
-    val type: Coupon.CouponType,
+    val type: Coupon.DiscountType,
 
     val discount: Long,
 
-    val expirationDay: Int
-): BaseEntity() {
-}
+    val expirationDay: Int,
+
+    var quantity: Long
+): BaseEntity()
