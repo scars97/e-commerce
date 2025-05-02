@@ -42,8 +42,8 @@ class OrderTest {
                 order.calculateOriginPrice(items)
 
                 // then
-                items.forEach {
-                    expectOriginPrice += (it.price.multiply(BigDecimal.valueOf(orderQuantity)))
+                expectOriginPrice = items.sumOf {
+                     it.price * (BigDecimal.valueOf(orderQuantity))
                 }
                 assertThat(order.originPrice).isEqualTo(expectOriginPrice)
                 assertThat(order.originPrice).isEqualTo(order.totalPrice)

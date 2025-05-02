@@ -28,8 +28,8 @@ class Order(
     fun calculateOriginPrice(items: List<Item>) {
         val quantityOfItem = this.orderItems.associate { it.itemId to BigDecimal.valueOf(it.quantity) }
 
-        items.forEach {
-            this.originPrice += (it.price * quantityOfItem[it.id]!!)
+        this.originPrice = items.sumOf {
+             it.price * quantityOfItem[it.id]!!
         }
 
         this.totalPrice = this.originPrice

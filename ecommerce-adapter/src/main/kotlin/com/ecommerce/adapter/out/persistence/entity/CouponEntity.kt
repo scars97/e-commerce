@@ -21,4 +21,14 @@ class CouponEntity(
     val expirationDay: Int,
 
     var quantity: Long
-): BaseEntity()
+): BaseEntity() {
+
+    constructor(
+        title: String,
+        type: Coupon.DiscountType,
+        discount: Long,
+        expirationDay: Int,
+        quantity: Long
+    ): this(0, title, type, discount, expirationDay, quantity)
+
+}
