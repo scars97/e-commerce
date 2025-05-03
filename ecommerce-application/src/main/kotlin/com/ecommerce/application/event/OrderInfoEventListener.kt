@@ -12,7 +12,7 @@ class OrderInfoEventListener(
     private val dataPlatformPort: DataPlatformPort
 ) {
 
-    @Async // TODO 스레드 풀 설정
+    @Async("eventTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun send(event: SendOrderInfoEvent) {
         dataPlatformPort.sendOrderInfo(event)
