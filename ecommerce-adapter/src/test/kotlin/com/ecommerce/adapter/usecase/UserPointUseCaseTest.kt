@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 
-class UserPointTest @Autowired constructor(
+class UserPointUseCaseTest @Autowired constructor(
     private val sut: UserPointUseCase,
     private val userJpaRepository: UserJpaRepository,
     private val historyJapRepository: PointHistoryJapRepository
