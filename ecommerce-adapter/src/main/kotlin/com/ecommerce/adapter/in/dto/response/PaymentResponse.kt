@@ -14,7 +14,7 @@ data class PaymentResponse(
     companion object {
         fun of(payment: Payment): PaymentResponse {
             return PaymentResponse(
-                paymentId = payment.id,
+                paymentId = payment.id!!,
                 orderId = payment.orderId,
                 userId = payment.userId,
                 price = payment.price,

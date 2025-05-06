@@ -15,7 +15,7 @@ class PaymentTest {
         // given
         val requestPrice = BigDecimal.valueOf(10000L)
         val paymentPrice = BigDecimal.valueOf(7000L)
-        val payment = Payment(1L, 1L, paymentPrice)
+        val payment = Payment(null, 1L, 1L, paymentPrice)
 
         // when & then
         assertThatThrownBy { payment.priceEqualTo(requestPrice) }

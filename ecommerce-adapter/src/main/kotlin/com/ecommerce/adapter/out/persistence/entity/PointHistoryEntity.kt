@@ -10,7 +10,7 @@ class PointHistoryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_history_id")
-    val id: Long,
+    val id: Long?,
 
     val userId: Long,
 
@@ -18,12 +18,4 @@ class PointHistoryEntity(
     val status: PointHistory.PointHistoryStatus,
 
     val amount: BigDecimal
-): BaseEntity() {
-
-    constructor(
-        userId: Long,
-        status: PointHistory.PointHistoryStatus,
-        amount: BigDecimal
-    ) :this(0, userId, status, amount)
-
-}
+): BaseEntity()

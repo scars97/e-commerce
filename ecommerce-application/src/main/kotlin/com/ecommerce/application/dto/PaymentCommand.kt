@@ -10,7 +10,7 @@ data class PaymentCommand(
 ) {
 
     fun toPayment(): Payment {
-        return Payment(this.orderId, this.userId, this.price)
+        return Payment(null, this.orderId, this.userId, this.price)
     }
 
 }
