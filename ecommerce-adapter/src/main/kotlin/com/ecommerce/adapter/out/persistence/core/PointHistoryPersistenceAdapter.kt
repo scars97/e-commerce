@@ -8,12 +8,13 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class PointHistoryPersistenceAdapter(
+    private val pointHistoryMapper: PointHistoryMapper,
     private val jpaRepository: PointHistoryJapRepository
 ): PointHistoryPort {
 
     override fun saveHistory(pointHistory: PointHistory) {
         jpaRepository.save(
-            PointHistoryMapper.toEntity(pointHistory)
+            pointHistoryMapper.toPointHistoryEntity(pointHistory)
         )
     }
 

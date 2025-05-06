@@ -10,21 +10,22 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class OrderPersistenceAdapter(
+    private val orderMapper: OrderMapper,
     private val jpaRepository: OrderJpaRepository
 ): OrderPort {
 
     override fun commandOrder(order: Order): Order {
-        val orderEntity = OrderMapper.toOrderEntity(order)
+        val orderEntity = orderMapper.toOrderEntity(order)
 
         val saveOrder = jpaRepository.save(orderEntity)
 
-        return OrderMapper.toOrder(saveOrder)
+        return orderMapper.toOrder(saveOrder)
     }
 
     override fun findOrderById(orderId: Long): Order {
         val order = jpaRepository.findById(orderId).orElseThrow { CustomException(ErrorCode.ORDER_NOT_FOUND) }
 
-        return OrderMapper.toOrder(order)
+        return orderMapper.toOrder(order)
     }
 
 }

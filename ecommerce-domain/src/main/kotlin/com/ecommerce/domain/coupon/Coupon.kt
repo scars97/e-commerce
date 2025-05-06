@@ -5,7 +5,7 @@ import com.ecommerce.common.exception.ErrorCode
 import java.math.BigDecimal
 
 class Coupon(
-    val id: Long,
+    val id: Long?,
     val title: String,
     val type: DiscountType,
     val discount: Long,

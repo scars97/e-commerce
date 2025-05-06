@@ -19,7 +19,7 @@ class UserPointService(
     override fun pointRecharge(command: PointCommand): User {
         val user = userPort.findUserById(command.userId)
         
-        userPort.updateUser(user.pointRecharge(command.price))
+        userPort.commandUser(user.pointRecharge(command.price))
 
         pointHistoryPort.saveHistory(
             PointHistory.createAtRecharge(command.userId, command.price)

@@ -6,6 +6,6 @@ interface UserPort {
 
     fun findUserById(userId: Long): User
 
-    fun updateUser(user: User)
+    fun commandUser(user: User): User
 
 }

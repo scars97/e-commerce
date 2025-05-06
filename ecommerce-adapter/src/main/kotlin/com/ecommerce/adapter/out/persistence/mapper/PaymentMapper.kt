@@ -2,28 +2,19 @@ package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.PaymentEntity
 import com.ecommerce.domain.Payment
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 
-class PaymentMapper {
+@Mapper(componentModel = "spring")
+interface PaymentMapper {
 
-    companion object {
-        fun toPaymentEntity(domain: Payment): PaymentEntity {
-            return PaymentEntity(
-                orderId = domain.orderId,
-                userId = domain.userId,
-                price = domain.price,
-                status = domain.status
-            )
-        }
+    fun toPayment(entity: PaymentEntity): Payment
 
-        fun toPayment(entity: PaymentEntity): Payment {
-            return Payment(
-                id = entity.id,
-                orderId = entity.orderId,
-                userId = entity.userId,
-                price = entity.price,
-                status = entity.status
-            )
-        }
-    }
+    @Mappings(
+        Mapping(target = "createAt", ignore = true),
+        Mapping(target = "modifiedAt", ignore = true)
+    )
+    fun toPaymentEntity(domain: Payment): PaymentEntity
 
 }

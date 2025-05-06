@@ -6,11 +6,11 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class User(
-    val id: Long,
+    val id: Long?,
     val username: String,
-    var point: BigDecimal,
-    val createAt: LocalDateTime,
-    val modifiedAt: LocalDateTime,
+    var point: BigDecimal = BigDecimal.ZERO,
+    val createAt: LocalDateTime?,
+    val modifiedAt: LocalDateTime?,
 ) {
 
     fun pointRecharge(price: BigDecimal): User {

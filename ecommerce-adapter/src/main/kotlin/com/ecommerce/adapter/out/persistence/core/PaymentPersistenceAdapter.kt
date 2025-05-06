@@ -8,15 +8,16 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class PaymentPersistenceAdapter(
+    private val paymentMapper: PaymentMapper,
     private val jpaRepository: PaymentJpaRepository
 ): PaymentPort {
 
     override fun savePayment(payment: Payment): Payment {
         val savePayment = jpaRepository.save(
-            PaymentMapper.toPaymentEntity(payment)
+            paymentMapper.toPaymentEntity(payment)
         )
 
-        return PaymentMapper.toPayment(savePayment)
+        return paymentMapper.toPayment(savePayment)
     }
 
 }

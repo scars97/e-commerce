@@ -30,10 +30,10 @@ class PaymentService(
         val order = orderPort.findOrderById(payment.orderId)
         payment.priceEqualTo(order.totalPrice)
         
-        userPort.updateUser(user.pointUse(payment.price))
+        userPort.commandUser(user.pointUse(payment.price))
 
         pointHistoryPort.saveHistory(
-            PointHistory.createAtUsed(user.id, payment.price)
+            PointHistory.createAtUsed(user.id!!, payment.price)
         )
 
         orderPort.commandOrder(order.paid())

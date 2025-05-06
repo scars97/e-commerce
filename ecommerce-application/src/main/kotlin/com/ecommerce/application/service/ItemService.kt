@@ -35,7 +35,7 @@ class ItemService(
             .groupBy { it.itemId }
             .map { (itemId, items) ->
                 val totalQuantity = items.sumOf { it.quantity }
-                OrderItem(itemId, totalQuantity)
+                OrderItem(null, itemId, totalQuantity)
             }
             .sortedByDescending { it.quantity }
             .take(ITEM_LIMIT)

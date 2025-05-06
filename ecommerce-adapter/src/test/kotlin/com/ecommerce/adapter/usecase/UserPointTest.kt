@@ -23,7 +23,7 @@ class UserPointTest @Autowired constructor(
     @BeforeEach
     fun setUp() {
         userJpaRepository.save(
-            UserEntity("test")
+            UserEntity(null, "성현", BigDecimal.ZERO)
         )
     }
 

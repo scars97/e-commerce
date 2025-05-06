@@ -34,16 +34,16 @@ class OrderUseCaseTest @Autowired constructor(
 
     @BeforeEach
     fun setUp() {
-        user = userRepository.save(UserEntity("성현"))
-        coupon = couponRepository.save(CouponEntity("선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, 50))
+        user = userRepository.save(UserEntity(null, "성현", BigDecimal.ZERO))
+        coupon = couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, 50))
         userCoupon = userCouponRepository.save(
-            UserCouponEntity(null, user.id, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(30), null)
+            UserCouponEntity(null, user.id!!, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(30), null)
         )
         items = itemRepository.saveAll(
             listOf(
-                ItemEntity(1L, "상품 A", BigDecimal.valueOf(10000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(10L)),
-                ItemEntity(1L, "상품 B", BigDecimal.valueOf(7000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(7L)),
-                ItemEntity(1L, "상품 C", BigDecimal.valueOf(5000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(5L)),
+                ItemEntity(null, 1L, "상품 A", BigDecimal.valueOf(10000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10L)),
+                ItemEntity(null, 1L, "상품 B", BigDecimal.valueOf(7000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 7L)),
+                ItemEntity(null, 1L, "상품 C", BigDecimal.valueOf(5000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 5L)),
             )
         )
     }

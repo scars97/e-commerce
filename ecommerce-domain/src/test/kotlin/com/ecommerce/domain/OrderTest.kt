@@ -31,8 +31,8 @@ class OrderTest {
     fun calculateOrderPrice(): List<DynamicTest> {
         // given
         val orderQuantity = 2L
-        val orderItem = items.map { OrderItem(it.id, orderQuantity) }
-        val order = Order(1L, 1L, orderItem)
+        val orderItem = items.map { OrderItem(null, it.id, orderQuantity) }
+        val order = Order(null, 1L, 1L, orderItem)
 
         var expectOriginPrice = BigDecimal.ZERO
 
@@ -71,8 +71,8 @@ class OrderTest {
     @Test
     fun whenOrderPayment_thenOrderStatusIsPaid() {
         // given
-        val orderItem = items.map { OrderItem(it.id, 2L) }
-        val order = Order(1L, 1L, orderItem)
+        val orderItem = items.map { OrderItem(null, it.id, 2L) }
+        val order = Order(null, 1L, 1L, orderItem)
 
         // when
         order.paid()

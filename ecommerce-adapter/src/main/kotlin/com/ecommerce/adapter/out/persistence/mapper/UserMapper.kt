@@ -2,35 +2,19 @@ package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.UserEntity
 import com.ecommerce.domain.User
-import java.math.BigDecimal
-import java.time.LocalDateTime
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 
-data class UserMapper(
-    val id: Long,
-    val username: String,
-    val point: BigDecimal,
-    val createAt: LocalDateTime,
-    val modifiedAt: LocalDateTime
-) {
+@Mapper(componentModel = "spring")
+interface UserMapper {
 
-    companion object {
-        fun toDomain(entity: UserEntity): User {
-            return User(
-                id = entity.id ,
-                username = entity.username,
-                point = entity.point,
-                createAt = entity.createAt,
-                modifiedAt = entity.modifiedAt
-            )
-        }
+    fun toUser(entity: UserEntity): User
 
-        fun toEntity(domain: User): UserEntity {
-            return UserEntity(
-                id = domain.id,
-                username = domain.username,
-                point = domain.point
-            )
-        }
-    }
+    @Mappings(
+        Mapping(target = "createAt", ignore = true),
+        Mapping(target = "modifiedAt", ignore = true)
+    )
+    fun toUserEntity(domain: User): UserEntity
 
 }

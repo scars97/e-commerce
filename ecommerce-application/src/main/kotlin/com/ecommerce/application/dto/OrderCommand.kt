@@ -2,6 +2,7 @@ package com.ecommerce.application.dto
 
 import com.ecommerce.domain.order.Order
 import com.ecommerce.domain.order.OrderItem
+import java.math.BigDecimal
 
 data class OrderCommand(
     val userId: Long,
@@ -11,6 +12,7 @@ data class OrderCommand(
 
     fun toOrder(): Order {
         return Order(
+            id = null,
             couponId = this.couponId,
             userId = this.userId,
             orderItems = this.orderItems.map { it.toOrderItem() }
@@ -23,6 +25,7 @@ data class OrderCommand(
     ) {
         fun toOrderItem(): OrderItem {
             return OrderItem(
+                null,
                 this.itemId,
                 this.quantity
             )

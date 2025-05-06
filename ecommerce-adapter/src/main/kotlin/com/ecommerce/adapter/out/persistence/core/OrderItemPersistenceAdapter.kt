@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderItemPersistenceAdapter(
+    private val orderMapper: OrderMapper,
     private val jpaRepository: OrderItemJpaRepository
 ): OrderItemPort {
 
@@ -17,7 +18,7 @@ class OrderItemPersistenceAdapter(
 
         val orderItems = jpaRepository.findByCreateAtGreaterThanEqual(from)
 
-        return orderItems.map { OrderMapper.toOrderItem(it) }
+        return orderItems.map { orderMapper.toOrderItem(it) }
     }
 
 }

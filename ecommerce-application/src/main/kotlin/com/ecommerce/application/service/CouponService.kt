@@ -23,7 +23,7 @@ class CouponService(
 
         // 발급 쿠폰 저장
         return couponPort.commandUserCoupon(
-            UserCoupon.register(user.id, coupon)
+            UserCoupon.register(user.id!!, coupon)
         )
     }
 
