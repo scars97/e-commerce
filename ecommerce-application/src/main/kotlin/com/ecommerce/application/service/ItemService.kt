@@ -51,9 +51,9 @@ class ItemService(
             PopularItem(
                 rank = index + 1,
                 cumulativeSales = item.quantity,
-                item = itemOfId[item.id]!!
+                item = itemOfId[item.itemId]!!
             )
-        }.toList()
+        }
     }
 
 }
