@@ -5,6 +5,8 @@ import com.ecommerce.adapter.out.persistence.repository.CouponJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.ItemJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserCouponJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
+import com.ecommerce.application.dto.OrderCommand
+import com.ecommerce.application.port.`in`.OrderUseCase
 import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
 import com.ecommerce.domain.item.Item
@@ -14,6 +16,7 @@ import java.time.LocalDateTime
 
 @Component
 class OrderFixture(
+    private val orderUseCase: OrderUseCase,
     private val userRepository: UserJpaRepository,
     private val couponRepository: CouponJpaRepository,
     private val userCouponRepository: UserCouponJpaRepository,
@@ -57,6 +60,23 @@ class OrderFixture(
 
     fun getItems(): List<ItemEntity> {
         return this.items
+    }
+
+    fun placeOrder() {
+        this.execute()
+        orderUseCase.placeOrder(
+            OrderCommand(
+                userId = 1L,
+                couponId = null,
+                orderItems = listOf(
+                    OrderCommand.OrderItemCommand(1L, 15L),
+                    OrderCommand.OrderItemCommand(2L, 18L),
+                    OrderCommand.OrderItemCommand(3L, 10L),
+                    OrderCommand.OrderItemCommand(4L, 12L),
+                    OrderCommand.OrderItemCommand(5L, 20L),
+                )
+            )
+        )
     }
 
 }

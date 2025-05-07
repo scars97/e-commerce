@@ -2,9 +2,7 @@ package com.ecommerce.adapter.usecase
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
 import com.ecommerce.adapter.fixture.OrderFixture
-import com.ecommerce.application.dto.OrderCommand
 import com.ecommerce.application.port.`in`.ItemUseCase
-import com.ecommerce.application.port.`in`.OrderUseCase
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,27 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class ItemUseCaseTest @Autowired constructor(
     private val sut: ItemUseCase,
-    private val orderUseCase: OrderUseCase,
     private val orderFixture: OrderFixture
 ): IntegrateTestSupport() {
 
     @BeforeEach
     fun setUp() {
-        orderFixture.execute()
-
-        orderUseCase.placeOrder(
-            OrderCommand(
-                userId = 1L,
-                couponId = null,
-                orderItems = listOf(
-                    OrderCommand.OrderItemCommand(1L, 15L),
-                    OrderCommand.OrderItemCommand(2L, 18L),
-                    OrderCommand.OrderItemCommand(3L, 10L),
-                    OrderCommand.OrderItemCommand(4L, 12L),
-                    OrderCommand.OrderItemCommand(5L, 20L),
-                )
-            )
-        )
+        orderFixture.placeOrder()
     }
 
     @Test
