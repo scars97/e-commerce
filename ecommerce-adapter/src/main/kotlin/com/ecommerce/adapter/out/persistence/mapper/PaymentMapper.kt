@@ -1,7 +1,7 @@
 package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.PaymentEntity
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings

@@ -2,6 +2,7 @@ package com.ecommerce.domain
 
 import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode
+import com.ecommerce.domain.payment.Payment
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

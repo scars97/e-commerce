@@ -1,7 +1,7 @@
 package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.UserEntity
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.User
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings

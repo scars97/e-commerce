@@ -1,4 +1,4 @@
-package com.ecommerce.domain
+package com.ecommerce.domain.user
 
 import java.math.BigDecimal
 import java.time.LocalDateTime

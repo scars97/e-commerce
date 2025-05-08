@@ -1,6 +1,6 @@
 package com.ecommerce.application.dto
 
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import java.math.BigDecimal
 
 data class PaymentCommand(

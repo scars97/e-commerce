@@ -5,7 +5,7 @@ import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
 import com.ecommerce.application.port.out.UserPort
 import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.User
 import org.springframework.stereotype.Repository
 
 @Repository

@@ -1,6 +1,6 @@
 package com.ecommerce.adapter.out.persistence.entity
 
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import jakarta.persistence.*
 import java.math.BigDecimal
 

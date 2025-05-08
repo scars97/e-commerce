@@ -1,6 +1,6 @@
 package com.ecommerce.adapter.out.persistence.entity
 
-import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.user.PointHistory
 import jakarta.persistence.*
 import java.math.BigDecimal
 

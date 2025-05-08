@@ -1,4 +1,4 @@
-package com.ecommerce.domain
+package com.ecommerce.domain.user
 
 import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode

@@ -6,7 +6,7 @@ import com.ecommerce.adapter.out.persistence.repository.PointHistoryJapRepositor
 import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
 import com.ecommerce.application.dto.PointCommand
 import com.ecommerce.application.port.`in`.UserPointUseCase
-import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.user.PointHistory
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

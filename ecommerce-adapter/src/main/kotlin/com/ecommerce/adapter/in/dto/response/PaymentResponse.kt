@@ -1,6 +1,6 @@
 package com.ecommerce.adapter.`in`.dto.response
 
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import java.math.BigDecimal
 
 data class PaymentResponse(

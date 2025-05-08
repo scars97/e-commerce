@@ -4,8 +4,8 @@ import com.ecommerce.application.dto.PointCommand
 import com.ecommerce.application.port.`in`.UserPointUseCase
 import com.ecommerce.application.port.out.PointHistoryPort
 import com.ecommerce.application.port.out.UserPort
-import com.ecommerce.domain.PointHistory
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.PointHistory
+import com.ecommerce.domain.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

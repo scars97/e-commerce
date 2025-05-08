@@ -1,6 +1,6 @@
 package com.ecommerce.application.port.out
 
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.User
 
 interface UserPort {
 

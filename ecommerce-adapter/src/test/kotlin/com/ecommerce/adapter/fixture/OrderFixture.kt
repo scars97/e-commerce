@@ -28,7 +28,6 @@ class OrderFixture(
         SINGLE, BULK
     }
 
-
     private lateinit var user: UserEntity
     private lateinit var coupon: CouponEntity
     private lateinit var userCoupon: UserCouponEntity

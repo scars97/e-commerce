@@ -2,7 +2,7 @@ package com.ecommerce.adapter.persistence
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
 import com.ecommerce.application.port.out.UserPort
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.User
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
