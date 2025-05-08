@@ -15,7 +15,7 @@ class ItemUseCaseTest @Autowired constructor(
 
     @BeforeEach
     fun setUp() {
-        orderFixture.placeOrder()
+        orderFixture.placeOrder(OrderFixture.OrderFixtureStatus.BULK)
     }
 
     @Test
