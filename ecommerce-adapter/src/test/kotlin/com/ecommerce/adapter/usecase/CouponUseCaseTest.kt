@@ -7,11 +7,15 @@ import com.ecommerce.adapter.out.persistence.repository.CouponJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
 import com.ecommerce.application.dto.CouponCommand
 import com.ecommerce.application.port.`in`.CouponUseCase
+import com.ecommerce.common.exception.CustomException
+import com.ecommerce.common.exception.ErrorCode
 import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 
@@ -29,21 +33,31 @@ class CouponUseCaseTest @Autowired constructor(
         couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
     }
 
-    @Test
-    fun issuedCoupon() {
+    @DisplayName("쿠폰 발급 시나리오")
+    @TestFactory
+    fun issuedCoupon(): List<DynamicTest> {
         // given
         val command = CouponCommand(1L, 1L)
 
-        // when
-        val result = sut.issued(command)
+        return listOf(
+            DynamicTest.dynamicTest("쿠폰 정상 발급") {
+                // when
+                val result = sut.issued(command)
 
-        // then
-        assertThat(result).extracting("id", "coupon.title", "coupon.quantity", "status")
-            .containsExactly(1L, "선착순 쿠폰", couponQuantity - 1L, UserCoupon.UserCouponStatus.AVAILABLE)
-        assertThat(result.issuedAt).isNotNull()
-        assertThat(result.expireAt).isNotNull()
-        assertThat(result.usedAt).isNull()
-
+                // then
+                assertThat(result).extracting("id", "coupon.title", "coupon.quantity", "status")
+                    .containsExactly(1L, "선착순 쿠폰", couponQuantity - 1L, UserCoupon.UserCouponStatus.AVAILABLE)
+                assertThat(result.issuedAt).isNotNull()
+                assertThat(result.expireAt).isNotNull()
+                assertThat(result.usedAt).isNull()
+            },
+            DynamicTest.dynamicTest("발급된 쿠폰인 경우, 예외 발생") {
+                // when & then
+                assertThatThrownBy { sut.issued(command) }
+                    .isInstanceOf(CustomException::class.java)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPON_ALREADY_ISSUED)
+            }
+        )
     }
 
 }
