@@ -4,43 +4,27 @@ import com.ecommerce.adapter.out.persistence.entity.OrderEntity
 import com.ecommerce.adapter.out.persistence.entity.OrderItemEntity
 import com.ecommerce.domain.order.Order
 import com.ecommerce.domain.order.OrderItem
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 
-class OrderMapper {
+@Mapper(componentModel = "spring")
+interface OrderMapper {
 
-    companion object {
-        fun toOrderEntity(domain: Order): OrderEntity {
-            return OrderEntity(
-                id = domain.id ?:0,
-                couponId = domain.couponId,
-                userId = domain.userId,
-                orderItems = domain.orderItems.map { toOrderItemEntity(it) },
-                originPrice = domain.originPrice,
-                discountPrice = domain.discountPrice,
-                totalPrice = domain.totalPrice,
-                status = domain.status
-            )
-        }
+    fun toOrder(entity: OrderEntity): Order
 
-        fun toOrder(entity: OrderEntity): Order {
-            return Order(
-                id= entity.id,
-                couponId= entity.couponId,
-                userId= entity.userId,
-                orderItems= entity.orderItems.map { toOrderItem(it) }.toList(),
-                originPrice= entity.originPrice,
-                discountPrice= entity.discountPrice,
-                totalPrice= entity.totalPrice,
-                status= entity.status
-            )
-        }
+    fun toOrderItem(entity: OrderItemEntity): OrderItem
 
-        fun toOrderItemEntity(domain: OrderItem): OrderItemEntity {
-            return OrderItemEntity(domain.itemId, domain.quantity)
-        }
+    @Mappings(
+        Mapping(target = "createAt", ignore = true),
+        Mapping(target = "modifiedAt", ignore = true)
+    )
+    fun toOrderEntity(domain: Order): OrderEntity
 
-        fun toOrderItem(entity: OrderItemEntity): OrderItem {
-            return OrderItem(entity.id, entity.itemId, entity.quantity)
-        }
-    }
+    @Mappings(
+        Mapping(target = "createAt", ignore = true),
+        Mapping(target = "modifiedAt", ignore = true)
+    )
+    fun toOrderItemEntity(domain: OrderItem): OrderItemEntity
 
 }

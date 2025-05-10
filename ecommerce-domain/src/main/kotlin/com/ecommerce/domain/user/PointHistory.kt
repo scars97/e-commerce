@@ -1,4 +1,4 @@
-package com.ecommerce.domain
+package com.ecommerce.domain.user
 
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -16,12 +16,10 @@ class PointHistory(
         RECHARGE, USED
     }
 
-    constructor(userId: Long, status: PointHistoryStatus, amount: BigDecimal)
-            :this(0, userId, status, amount)
-
     companion object {
         fun createAtRecharge(userId: Long, price: BigDecimal): PointHistory {
             return PointHistory(
+                null,
                 userId,
                 PointHistoryStatus.RECHARGE,
                 price
@@ -30,6 +28,7 @@ class PointHistory(
 
         fun createAtUsed(userId: Long, price: BigDecimal): PointHistory {
             return PointHistory(
+                null,
                 userId,
                 PointHistoryStatus.USED,
                 price

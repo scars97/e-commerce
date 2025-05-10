@@ -9,14 +9,9 @@ class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    val id: Long,
+    val id: Long?,
 
     val username: String,
 
     var point: BigDecimal
-): BaseEntity() {
-
-    constructor(username: String):
-            this(0, username, BigDecimal.ZERO)
-
-}
+): BaseEntity()

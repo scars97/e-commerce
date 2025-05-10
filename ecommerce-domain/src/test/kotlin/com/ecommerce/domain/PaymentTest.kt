@@ -2,6 +2,7 @@ package com.ecommerce.domain
 
 import com.ecommerce.common.exception.CustomException
 import com.ecommerce.common.exception.ErrorCode
+import com.ecommerce.domain.payment.Payment
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -15,7 +16,7 @@ class PaymentTest {
         // given
         val requestPrice = BigDecimal.valueOf(10000L)
         val paymentPrice = BigDecimal.valueOf(7000L)
-        val payment = Payment(1L, 1L, paymentPrice)
+        val payment = Payment(null, 1L, 1L, paymentPrice)
 
         // when & then
         assertThatThrownBy { payment.priceEqualTo(requestPrice) }

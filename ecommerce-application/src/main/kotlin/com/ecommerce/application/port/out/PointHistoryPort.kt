@@ -1,6 +1,6 @@
 package com.ecommerce.application.port.out
 
-import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.user.PointHistory
 
 interface PointHistoryPort {
 

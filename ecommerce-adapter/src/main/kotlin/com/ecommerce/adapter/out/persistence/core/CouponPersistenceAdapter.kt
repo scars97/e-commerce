@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CouponPersistenceAdapter(
+    private val couponMapper: CouponMapper,
     private val couponJpaRepository: CouponJpaRepository,
     private val userCouponJpaRepository: UserCouponJpaRepository
 ): CouponPort {
@@ -20,29 +21,29 @@ class CouponPersistenceAdapter(
         val coupon = couponJpaRepository.findById(couponId)
             .orElseThrow { CustomException(ErrorCode.COUPON_NOT_FOUND) }
 
-        return CouponMapper.toCoupon(coupon)
+        return couponMapper.toCoupon(coupon)
     }
 
     override fun commandCoupon(coupon: Coupon): Coupon {
-        val entity = CouponMapper.toCouponEntity(coupon)
+        val entity = couponMapper.toCouponEntity(coupon)
 
         val saveCoupon = couponJpaRepository.save(entity)
 
-        return CouponMapper.toCoupon(saveCoupon)
+        return couponMapper.toCoupon(saveCoupon)
     }
 
     override fun findUserCouponBy(userCouponId: Long, userId: Long): UserCoupon {
         val userCoupon = userCouponJpaRepository.findByCouponIdAndUserId(userCouponId, userId)
             .orElseThrow { CustomException(ErrorCode.COUPON_NOT_FOUND) }
 
-        return CouponMapper.toUserCoupon(userCoupon!!)
+        return couponMapper.toUserCoupon(userCoupon!!)
     }
 
     override fun commandUserCoupon(userCoupon: UserCoupon): UserCoupon {
-        val userCouponEntity = CouponMapper.toUserCouponEntity(userCoupon)
+        val userCouponEntity = couponMapper.toUserCouponEntity(userCoupon)
 
         val saveUserCoupon = userCouponJpaRepository.save(userCouponEntity)
 
-        return CouponMapper.toUserCoupon(saveUserCoupon)
+        return couponMapper.toUserCoupon(saveUserCoupon)
     }
 }

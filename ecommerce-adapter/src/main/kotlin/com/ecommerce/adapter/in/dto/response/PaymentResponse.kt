@@ -1,6 +1,6 @@
 package com.ecommerce.adapter.`in`.dto.response
 
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import java.math.BigDecimal
 
 data class PaymentResponse(
@@ -14,7 +14,7 @@ data class PaymentResponse(
     companion object {
         fun of(payment: Payment): PaymentResponse {
             return PaymentResponse(
-                paymentId = payment.id,
+                paymentId = payment.id!!,
                 orderId = payment.orderId,
                 userId = payment.userId,
                 price = payment.price,

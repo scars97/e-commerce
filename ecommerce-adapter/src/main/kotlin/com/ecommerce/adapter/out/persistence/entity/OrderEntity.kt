@@ -10,7 +10,7 @@ class OrderEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    val id: Long,
+    val id: Long?,
 
     val couponId: Long?,
 

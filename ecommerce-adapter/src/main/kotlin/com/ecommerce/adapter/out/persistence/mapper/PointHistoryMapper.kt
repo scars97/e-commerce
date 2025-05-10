@@ -1,18 +1,18 @@
 package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.PointHistoryEntity
-import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.user.PointHistory
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 
-class PointHistoryMapper {
+@Mapper(componentModel = "spring")
+interface PointHistoryMapper {
 
-    companion object {
-        fun toEntity(domain: PointHistory): PointHistoryEntity {
-            return PointHistoryEntity(
-                userId = domain.userId,
-                status = domain.status,
-                amount = domain.amount
-            )
-        }
-    }
+    @Mappings(
+        Mapping(target = "createAt", ignore = true),
+        Mapping(target = "modifiedAt", ignore = true)
+    )
+    fun toPointHistoryEntity(domain: PointHistory): PointHistoryEntity
 
 }

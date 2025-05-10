@@ -6,7 +6,7 @@ import com.ecommerce.adapter.out.persistence.repository.PointHistoryJapRepositor
 import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
 import com.ecommerce.application.dto.PointCommand
 import com.ecommerce.application.port.`in`.UserPointUseCase
-import com.ecommerce.domain.PointHistory
+import com.ecommerce.domain.user.PointHistory
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 
-class UserPointTest @Autowired constructor(
+class UserPointUseCaseTest @Autowired constructor(
     private val sut: UserPointUseCase,
     private val userJpaRepository: UserJpaRepository,
     private val historyJapRepository: PointHistoryJapRepository
@@ -23,7 +23,7 @@ class UserPointTest @Autowired constructor(
     @BeforeEach
     fun setUp() {
         userJpaRepository.save(
-            UserEntity("test")
+            UserEntity(null, "성현", BigDecimal.ZERO)
         )
     }
 

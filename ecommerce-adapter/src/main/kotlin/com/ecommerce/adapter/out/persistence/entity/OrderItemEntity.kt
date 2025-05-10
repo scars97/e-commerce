@@ -8,13 +8,9 @@ class OrderItemEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
-    val id: Long,
+    val id: Long?,
 
     val itemId: Long,
 
     val quantity: Long
-): BaseEntity() {
-
-    constructor(itemId: Long, quantity: Long): this(0, itemId, quantity)
-
-}
+): BaseEntity()

@@ -35,7 +35,7 @@ class ItemService(
             .groupBy { it.itemId }
             .map { (itemId, items) ->
                 val totalQuantity = items.sumOf { it.quantity }
-                OrderItem(itemId, totalQuantity)
+                OrderItem(null, itemId, totalQuantity)
             }
             .sortedByDescending { it.quantity }
             .take(ITEM_LIMIT)
@@ -51,9 +51,9 @@ class ItemService(
             PopularItem(
                 rank = index + 1,
                 cumulativeSales = item.quantity,
-                item = itemOfId[item.id]!!
+                item = itemOfId[item.itemId]!!
             )
-        }.toList()
+        }
     }
 
 }

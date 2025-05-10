@@ -24,7 +24,7 @@ class PointController(
         val userPoint = userPointUseCase.pointRecharge(request.toCommand())
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            PointResponse(userPoint.id, userPoint.point)
+            PointResponse(userPoint.id!!, userPoint.point)
         )
     }
 
@@ -33,7 +33,7 @@ class PointController(
         val userPoint = userPointUseCase.getPoint(userId)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            PointResponse(userPoint.id, userPoint.point)
+            PointResponse(userPoint.id!!, userPoint.point)
         )
     }
 

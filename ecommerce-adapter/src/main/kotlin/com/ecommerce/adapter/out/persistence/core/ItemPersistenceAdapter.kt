@@ -12,13 +12,14 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ItemPersistenceAdapter(
+    private val itemMapper: ItemMapper,
     private val jpaRepository: ItemJpaRepository
 ): ItemPort {
 
     override fun getItemsByPage(page: Int, size: Int): Page<Item> {
         val items = jpaRepository.findAll(PageRequest.of(page, size))
 
-        return items.map { ItemMapper.toItemDomain(it) }
+        return items.map { itemMapper.toItem(it) }
     }
 
     override fun getItemsIn(itemIds: List<Long>): List<Item> {
@@ -26,12 +27,12 @@ class ItemPersistenceAdapter(
 
         if (items.size != itemIds.size) throw CustomException(ErrorCode.ITEM_NOT_FOUND)
 
-        return items.map { ItemMapper.toItemDomain(it) }
+        return items.map { itemMapper.toItem(it) }
     }
 
     override fun updateItems(items: List<Item>) {
         jpaRepository.saveAll(
-            items.map { ItemMapper.toItemEntity(it) }
+            items.map { itemMapper.toItemEntity(it) }
         )
     }
 

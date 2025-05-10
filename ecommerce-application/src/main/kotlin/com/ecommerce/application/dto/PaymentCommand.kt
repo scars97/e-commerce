@@ -1,6 +1,6 @@
 package com.ecommerce.application.dto
 
-import com.ecommerce.domain.Payment
+import com.ecommerce.domain.payment.Payment
 import java.math.BigDecimal
 
 data class PaymentCommand(
@@ -10,7 +10,7 @@ data class PaymentCommand(
 ) {
 
     fun toPayment(): Payment {
-        return Payment(this.orderId, this.userId, this.price)
+        return Payment(null, this.orderId, this.userId, this.price)
     }
 
 }

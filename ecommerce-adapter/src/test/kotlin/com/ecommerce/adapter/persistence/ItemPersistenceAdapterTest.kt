@@ -21,11 +21,11 @@ class ItemPersistenceAdapterTest @Autowired constructor(
     @BeforeEach
     fun setUp() {
         val items = listOf(
-            ItemEntity(1L, "test1", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(10)),
-            ItemEntity(1L, "test2", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(10)),
-            ItemEntity(1L, "test3", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(10)),
-            ItemEntity(1L, "test4", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(10)),
-            ItemEntity(1L, "test5", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(10)),
+            ItemEntity(null, 1L, "test1", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10)),
+            ItemEntity(null, 1L, "test2", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10)),
+            ItemEntity(null, 1L, "test3", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10)),
+            ItemEntity(null, 1L, "test4", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10)),
+            ItemEntity(null, 1L, "test5", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 10)),
         )
         itemJpaRepository.saveAll(items)
     }
@@ -46,6 +46,8 @@ class ItemPersistenceAdapterTest @Autowired constructor(
         assertThat(result.totalPages).isEqualTo(3)
         assertThat(result.totalElements).isEqualTo(5)
         assertThat(result.content).hasSize(1)
+            .extracting("stock").extracting("id", "quantity")
+            .containsExactly(tuple(5L, 10L))
     }
 
 }

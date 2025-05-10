@@ -1,7 +1,7 @@
 package com.ecommerce.application.port.`in`
 
 import com.ecommerce.application.dto.PointCommand
-import com.ecommerce.domain.User
+import com.ecommerce.domain.user.User
 
 interface UserPointUseCase {
 
