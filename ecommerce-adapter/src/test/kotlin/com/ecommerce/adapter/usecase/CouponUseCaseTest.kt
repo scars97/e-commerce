@@ -15,9 +15,12 @@ import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicInteger
 
 class CouponUseCaseTest @Autowired constructor(
     private val sut: CouponUseCase,
@@ -27,16 +30,13 @@ class CouponUseCaseTest @Autowired constructor(
 
     private val couponQuantity = 50L
 
-    @BeforeEach
-    fun setUp() {
-        userRepository.save(UserEntity(null, "성현", BigDecimal.ZERO))
-        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
-    }
-
     @DisplayName("쿠폰 발급 시나리오")
     @TestFactory
     fun issuedCoupon(): List<DynamicTest> {
         // given
+        userRepository.save(UserEntity(null, "성현", BigDecimal.ZERO))
+        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+        
         val command = CouponCommand(1L, 1L)
 
         return listOf(
@@ -58,6 +58,41 @@ class CouponUseCaseTest @Autowired constructor(
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPON_ALREADY_ISSUED)
             }
         )
+    }
+
+    @DisplayName("쿠폰 수량이 50개인 경우, 50명은 발급에 성공하지만 1명은 발급에 실패한다.")
+    @Test
+    fun whenCouponQuantityIs50_then50UserWillSuccessBut1UserWillFail() {
+        // given
+        val totalUser = 51
+        for (i in 1 .. totalUser) {
+            val username = "user$i"
+            userRepository.save(
+                UserEntity(null, username, BigDecimal.ZERO)
+            )
+        }
+        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+
+        val successCount = AtomicInteger(0)
+        val failureCount = AtomicInteger(0)
+
+        // when
+        val tasks = (1 .. totalUser).map { userId ->
+            CompletableFuture.runAsync{
+                try {
+                    sut.issued(CouponCommand(1L, userId.toLong()))
+                    successCount.incrementAndGet()
+                } catch (e: Exception) {
+                    failureCount.incrementAndGet()
+                }
+            }
+        }
+
+        CompletableFuture.allOf(*tasks.toTypedArray()).join()
+
+        // then
+        assertThat(successCount.get()).isEqualTo(50)
+        assertThat(failureCount.get()).isOne()
     }
 
 }
