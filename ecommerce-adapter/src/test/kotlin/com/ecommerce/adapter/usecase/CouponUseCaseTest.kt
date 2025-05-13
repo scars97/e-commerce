@@ -1,10 +1,9 @@
 package com.ecommerce.adapter.usecase
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
+import com.ecommerce.adapter.fixture.UserFixture
 import com.ecommerce.adapter.out.persistence.entity.CouponEntity
-import com.ecommerce.adapter.out.persistence.entity.UserEntity
 import com.ecommerce.adapter.out.persistence.repository.CouponJpaRepository
-import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
 import com.ecommerce.application.dto.CouponCommand
 import com.ecommerce.application.port.`in`.CouponUseCase
 import com.ecommerce.common.exception.CustomException
@@ -12,30 +11,29 @@ import com.ecommerce.common.exception.ErrorCode
 import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
 import org.assertj.core.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
-import java.math.BigDecimal
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
 
 class CouponUseCaseTest @Autowired constructor(
     private val sut: CouponUseCase,
-    private val userRepository: UserJpaRepository,
+    private val userFixture: UserFixture,
     private val couponRepository: CouponJpaRepository
 ): IntegrateTestSupport() {
 
     private val couponQuantity = 50L
 
+    @BeforeEach
+    fun setUp() {
+        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+    }
+
     @DisplayName("쿠폰 발급 시나리오")
     @TestFactory
     fun issuedCoupon(): List<DynamicTest> {
         // given
-        userRepository.save(UserEntity(null, "성현", BigDecimal.ZERO))
-        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+        userFixture.createSingleUser()
         
         val command = CouponCommand(1L, 1L)
 
@@ -65,13 +63,7 @@ class CouponUseCaseTest @Autowired constructor(
     fun whenCouponQuantityIs50_then50UserWillSuccessBut1UserWillFail() {
         // given
         val totalUser = 51
-        for (i in 1 .. totalUser) {
-            val username = "user$i"
-            userRepository.save(
-                UserEntity(null, username, BigDecimal.ZERO)
-            )
-        }
-        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+        userFixture.createBulkUsers(totalUser)
 
         val successCount = AtomicInteger(0)
         val failureCount = AtomicInteger(0)
@@ -87,7 +79,6 @@ class CouponUseCaseTest @Autowired constructor(
                 }
             }
         }
-
         CompletableFuture.allOf(*tasks.toTypedArray()).join()
 
         // then
