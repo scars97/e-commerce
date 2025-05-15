@@ -24,7 +24,7 @@ class Item(
         }
     }
 
-    fun deductStock(count: Long?) {
+    fun deductStock(count: Long) {
         if (this.stock.deduct(count) == 0L) {
             this.soldOut()
         }

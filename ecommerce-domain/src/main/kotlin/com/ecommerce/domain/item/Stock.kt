@@ -8,8 +8,8 @@ class Stock(
     var quantity: Long
 ) {
 
-    fun deduct(count: Long?): Long {
-        if (this.quantity < count!!) {
+    fun deduct(count: Long): Long {
+        if (this.quantity < count) {
             throw CustomException(ErrorCode.OUT_OF_STOCK)
         }
 
