@@ -10,6 +10,7 @@ import com.ecommerce.domain.coupon.UserCoupon
 import com.ecommerce.domain.order.Order
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
@@ -17,6 +18,7 @@ import java.math.BigDecimal
 class OrderUseCaseTest @Autowired constructor(
     private val sut: OrderUseCase,
     private val orderFixture: OrderFixture,
+    private val userFixture: UserFixture,
     private val userCouponRepository: UserCouponJpaRepository,
     private val itemRepository: ItemJpaRepository
 ): IntegrateTestSupport() {
