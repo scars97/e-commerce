@@ -30,10 +30,8 @@ class ItemPersistenceAdapter(
         return items.map { itemMapper.toItem(it) }
     }
 
-    override fun updateItems(items: List<Item>) {
-        jpaRepository.saveAll(
-            items.map { itemMapper.toItemEntity(it) }
-        )
+    override fun updateItem(item: Item) {
+        jpaRepository.save(itemMapper.toItemEntity(item))
     }
 
 }

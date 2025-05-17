@@ -12,7 +12,6 @@ data class OrderCommand(
 
     fun toOrder(): Order {
         return Order(
-            id = null,
             couponId = this.couponId,
             userId = this.userId,
             orderItems = this.orderItems.map { it.toOrderItem() }
@@ -25,9 +24,8 @@ data class OrderCommand(
     ) {
         fun toOrderItem(): OrderItem {
             return OrderItem(
-                null,
-                this.itemId,
-                this.quantity
+                itemId = this.itemId,
+                quantity = this.quantity
             )
         }
     }

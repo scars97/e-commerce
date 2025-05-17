@@ -18,7 +18,7 @@ class CouponPersistenceAdapter(
 ): CouponPort {
 
     override fun findCouponById(couponId: Long): Coupon {
-        val coupon = couponJpaRepository.findById(couponId)
+        val coupon = couponJpaRepository.findByIdWithLock(couponId)
             .orElseThrow { CustomException(ErrorCode.COUPON_NOT_FOUND) }
 
         return couponMapper.toCoupon(coupon)
@@ -32,11 +32,15 @@ class CouponPersistenceAdapter(
         return couponMapper.toCoupon(saveCoupon)
     }
 
-    override fun findUserCouponBy(userCouponId: Long, userId: Long): UserCoupon {
-        val userCoupon = userCouponJpaRepository.findByCouponIdAndUserId(userCouponId, userId)
+    override fun findUserCouponBy(couponId: Long, userId: Long): UserCoupon {
+        val userCoupon = userCouponJpaRepository.findByCoupon_IdAndUserId(couponId, userId)
             .orElseThrow { CustomException(ErrorCode.COUPON_NOT_FOUND) }
 
         return couponMapper.toUserCoupon(userCoupon!!)
+    }
+
+    override fun isExistsUserCoupon(couponId: Long, userId: Long): Boolean {
+        return userCouponJpaRepository.existsByCoupon_IdAndUserId(couponId, userId)
     }
 
     override fun commandUserCoupon(userCoupon: UserCoupon): UserCoupon {
@@ -46,4 +50,5 @@ class CouponPersistenceAdapter(
 
         return couponMapper.toUserCoupon(saveUserCoupon)
     }
+
 }
