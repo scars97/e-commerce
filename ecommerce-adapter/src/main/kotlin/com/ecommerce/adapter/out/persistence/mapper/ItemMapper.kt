@@ -1,9 +1,7 @@
 package com.ecommerce.adapter.out.persistence.mapper
 
 import com.ecommerce.adapter.out.persistence.entity.ItemEntity
-import com.ecommerce.adapter.out.persistence.entity.StockEntity
 import com.ecommerce.domain.item.Item
-import com.ecommerce.domain.item.Stock
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
