@@ -1,6 +1,8 @@
 package com.ecommerce.adapter.usecase
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
+import com.ecommerce.adapter.fixture.CouponFixture
+import com.ecommerce.adapter.fixture.ItemFixture
 import com.ecommerce.adapter.fixture.OrderFixture
 import com.ecommerce.adapter.fixture.UserFixture
 import com.ecommerce.adapter.out.persistence.repository.StockJpaRepository
@@ -21,6 +23,8 @@ class OrderUseCaseTest @Autowired constructor(
     private val sut: OrderUseCase,
     private val orderFixture: OrderFixture,
     private val userFixture: UserFixture,
+    private val itemFixture: ItemFixture,
+    private val couponFixture: CouponFixture,
     private val userCouponRepository: UserCouponJpaRepository,
     private val stockRepository: StockJpaRepository
 ): IntegrateTestSupport() {
@@ -51,14 +55,14 @@ class OrderUseCaseTest @Autowired constructor(
     }
 
     private fun verifyUserCoupon() {
-        val findUserCoupon = userCouponRepository.findById(orderFixture.getUserCoupon().id!!).get()
+        val findUserCoupon = userCouponRepository.findById(couponFixture.getUserCoupon().id!!).get()
         assertThat(findUserCoupon.status).isEqualTo(UserCoupon.UserCouponStatus.USED)
         assertThat(findUserCoupon.usedAt).isNotNull()
     }
 
     private fun verifyRemainingStock(deductStock: Long) {
         val findStock = stockRepository.findAll()[0]
-        val originStockOfItem = orderFixture.getStocks().associate { it.itemId to it.quantity }
+        val originStockOfItem = itemFixture.getStocks().associate { it.itemId to it.quantity }
 
         val actualQuantity = findStock.quantity
         val expectQuantity = originStockOfItem[findStock.itemId]!! - deductStock
@@ -67,12 +71,12 @@ class OrderUseCaseTest @Autowired constructor(
     }
 
     private fun verifyOrderPrice(command: OrderCommand, result: Order) {
-        val priceOfItem = orderFixture.getItems().associate { it.id!! to it.price }
+        val priceOfItem = itemFixture.getItems().associate { it.id!! to it.price }
         val expectOriginPrice = command.orderItems.sumOf {
             priceOfItem[it.itemId]!! * BigDecimal.valueOf(it.quantity)
         }
 
-        val expectDiscountPrice = expectOriginPrice * BigDecimal.valueOf(orderFixture.getCoupon().discount).divide(BigDecimal.valueOf(100))
+        val expectDiscountPrice = expectOriginPrice * BigDecimal.valueOf(couponFixture.getCoupon().discount).divide(BigDecimal.valueOf(100))
         val expectTotalPrice = expectOriginPrice - expectDiscountPrice
 
         assertThat(result.originPrice.compareTo(expectOriginPrice)).isZero()
@@ -84,10 +88,9 @@ class OrderUseCaseTest @Autowired constructor(
     @Test
     fun whenItemQuantityIs50AndOrdersFor1Item_then50UserWillSucceedBut1UserWillFail() {
         // given
-        orderFixture.createItems()
-
         val totalUser = 51
         userFixture.createBulkUsers(totalUser)
+        itemFixture.createItemsAndStocks(50L)
 
         val successCount = AtomicInteger(0)
         val failureCount = AtomicInteger(0)

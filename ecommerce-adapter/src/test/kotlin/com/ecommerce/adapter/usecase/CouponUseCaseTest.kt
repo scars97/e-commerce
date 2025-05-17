@@ -1,9 +1,8 @@
 package com.ecommerce.adapter.usecase
 
 import com.ecommerce.adapter.config.IntegrateTestSupport
+import com.ecommerce.adapter.fixture.CouponFixture
 import com.ecommerce.adapter.fixture.UserFixture
-import com.ecommerce.adapter.out.persistence.entity.CouponEntity
-import com.ecommerce.adapter.out.persistence.repository.CouponJpaRepository
 import com.ecommerce.application.dto.CouponCommand
 import com.ecommerce.application.port.`in`.CouponUseCase
 import com.ecommerce.common.exception.CustomException
@@ -19,14 +18,14 @@ import java.util.concurrent.atomic.AtomicInteger
 class CouponUseCaseTest @Autowired constructor(
     private val sut: CouponUseCase,
     private val userFixture: UserFixture,
-    private val couponRepository: CouponJpaRepository
+    private val couponFixture: CouponFixture
 ): IntegrateTestSupport() {
 
     private val couponQuantity = 50L
 
     @BeforeEach
     fun setUp() {
-        couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, couponQuantity))
+        couponFixture.createCoupon(Coupon.DiscountType.RATE, 10, couponQuantity)
     }
 
     @DisplayName("쿠폰 발급 시나리오")

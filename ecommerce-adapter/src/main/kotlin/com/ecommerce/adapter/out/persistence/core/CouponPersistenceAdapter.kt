@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CouponPersistenceAdapter(
-    private val couponMapper: CouponMapper
+    private val couponMapper: CouponMapper,
     private val couponJpaRepository: CouponJpaRepository,
     private val userCouponJpaRepository: UserCouponJpaRepository
 ): CouponPort {

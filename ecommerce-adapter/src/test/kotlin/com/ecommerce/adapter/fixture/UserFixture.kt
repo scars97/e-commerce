@@ -10,16 +10,25 @@ class UserFixture(
     private val userRepository: UserJpaRepository
 ) {
 
-    fun createSingleUser(point: BigDecimal = BigDecimal.ZERO) {
-        userRepository.save(UserEntity(null, "user1", point))
+    private lateinit var user: UserEntity
+    private lateinit var users: List<UserEntity>
+
+    fun createSingleUser(point: BigDecimal = BigDecimal.ZERO): UserEntity {
+        user = userRepository.save(UserEntity(null, "user1", point))
+        return user
     }
 
-    fun createBulkUsers(totalUser: Int, point: BigDecimal = BigDecimal.ZERO) {
-        for (i in 1 .. totalUser) {
+    fun createBulkUsers(totalUser: Int, point: BigDecimal = BigDecimal.ZERO): List<UserEntity> {
+        users = (1 .. totalUser).map { i ->
             userRepository.save(
                 UserEntity(null, "user$i", point)
             )
         }
+        return users
+    }
+
+    fun getUser(): UserEntity {
+        return this.user
     }
 
 }
