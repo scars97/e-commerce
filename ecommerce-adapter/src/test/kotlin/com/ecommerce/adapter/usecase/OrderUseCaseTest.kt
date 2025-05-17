@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicInteger
 
 class OrderUseCaseTest @Autowired constructor(
     private val sut: OrderUseCase,
@@ -76,6 +78,42 @@ class OrderUseCaseTest @Autowired constructor(
         assertThat(result.originPrice.compareTo(expectOriginPrice)).isZero()
         assertThat(result.discountPrice.compareTo(expectDiscountPrice)).isZero()
         assertThat(result.totalPrice.compareTo(expectTotalPrice)).isZero()
+    }
+
+    @DisplayName("수량이 50개인 상품을 1개씩 동시 주문하는 경우, 50명은 주문에 성공하지만 나머지는 실패한다.")
+    @Test
+    fun whenItemQuantityIs50AndOrdersFor1Item_then50UserWillSucceedBut1UserWillFail() {
+        // given
+        orderFixture.createItems()
+
+        val totalUser = 51
+        userFixture.createBulkUsers(totalUser)
+
+        val successCount = AtomicInteger(0)
+        val failureCount = AtomicInteger(0)
+
+        // when
+        val tasks = (1 .. totalUser).map { userId ->
+            CompletableFuture.runAsync {
+                try {
+                    sut.placeOrder(
+                        OrderCommand(
+                            userId = userId.toLong(),
+                            couponId = null,
+                            orderItems = listOf(OrderCommand.OrderItemCommand(1L, 1L))
+                        )
+                    )
+                    successCount.incrementAndGet()
+                } catch (e: Exception) {
+                    failureCount.incrementAndGet()
+                }
+            }
+        }
+        CompletableFuture.allOf(*tasks.toTypedArray()).join()
+
+        // then
+        assertThat(successCount.get()).isEqualTo(50)
+        assertThat(failureCount.get()).isOne()
     }
 
 }
