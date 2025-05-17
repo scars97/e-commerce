@@ -9,6 +9,6 @@ interface ItemPort {
 
     fun getItemsIn(itemIds: List<Long>): List<Item>
 
-    fun updateItems(items: List<Item>)
+    fun updateItem(item: Item)
 
 }

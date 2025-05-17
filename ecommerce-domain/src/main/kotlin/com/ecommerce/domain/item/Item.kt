@@ -10,8 +10,7 @@ class Item(
     val name: String,
     val price: BigDecimal,
     val thumbnail: String,
-    var status: ItemStatus,
-    val stock: Stock
+    var status: ItemStatus
 ) {
 
     enum class ItemStatus {
@@ -21,12 +20,6 @@ class Item(
     fun isSelling() {
         if (this.status != ItemStatus.SELLING) {
             throw CustomException(ErrorCode.ITEM_IS_NOT_ON_SALE)
-        }
-    }
-
-    fun deductStock(count: Long) {
-        if (this.stock.deduct(count) == 0L) {
-            this.soldOut()
         }
     }
 

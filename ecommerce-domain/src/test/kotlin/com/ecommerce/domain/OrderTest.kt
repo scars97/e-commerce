@@ -15,15 +15,20 @@ import java.math.BigDecimal
 
 class OrderTest {
 
-    lateinit var items: List<Item>
+    private lateinit var items: List<Item>
+    private lateinit var stocks: List<Stock>
 
     @BeforeEach
     fun setUp() {
         items = listOf(
-            Item(1L, 1L, "상품 A", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING, Stock(1L, 10L)),
-            Item(2L, 1L, "상품 B", BigDecimal.valueOf(5000L), "http://test.png", Item.ItemStatus.SELLING, Stock(2L, 10L)),
-            Item(3L, 1L, "상품 C", BigDecimal.valueOf(7000L), "http://test.png", Item.ItemStatus.SELLING, Stock(3L, 10L)),
+            Item(1L, 1L, "상품 A", BigDecimal.valueOf(10000L), "http://test.png", Item.ItemStatus.SELLING),
+            Item(2L, 1L, "상품 B", BigDecimal.valueOf(5000L), "http://test.png", Item.ItemStatus.SELLING),
+            Item(3L, 1L, "상품 C", BigDecimal.valueOf(7000L), "http://test.png", Item.ItemStatus.SELLING)
         )
+
+        stocks = items.map {
+            Stock(1L, it.id, 10L)
+        }
     }
 
     @DisplayName("주문 금액 계산")

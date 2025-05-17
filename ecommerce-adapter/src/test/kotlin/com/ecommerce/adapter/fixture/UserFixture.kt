@@ -11,7 +11,7 @@ class UserFixture(
 ) {
 
     fun createSingleUser(point: BigDecimal = BigDecimal.ZERO) {
-        userRepository.save(UserEntity(null, "user1", BigDecimal.ZERO))
+        userRepository.save(UserEntity(null, "user1", point))
     }
 
     fun createBulkUsers(totalUser: Int, point: BigDecimal = BigDecimal.ZERO) {

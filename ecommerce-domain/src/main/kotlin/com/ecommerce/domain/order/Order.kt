@@ -5,8 +5,8 @@ import com.ecommerce.domain.item.Item
 import java.math.BigDecimal
 
 class Order(
-    val id: Long?,
-    val couponId: Long?,
+    val id: Long? = null,
+    val couponId: Long? = null,
     val userId: Long,
     val orderItems: List<OrderItem> = listOf(),
     var originPrice: BigDecimal = BigDecimal.ZERO,

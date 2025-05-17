@@ -4,7 +4,7 @@ import com.ecommerce.domain.item.Stock
 
 interface StockPort {
 
-    fun findStockById(id: Long): Stock
+    fun findStockByItemId(itemId: Long): Stock
 
     fun deductStock(stock: Stock)
 

@@ -5,6 +5,7 @@ import com.ecommerce.common.exception.ErrorCode
 
 class Stock(
     val id: Long,
+    val itemId: Long,
     var quantity: Long
 ) {
 

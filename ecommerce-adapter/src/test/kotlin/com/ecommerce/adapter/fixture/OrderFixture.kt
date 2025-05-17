@@ -1,10 +1,7 @@
 package com.ecommerce.adapter.fixture
 
 import com.ecommerce.adapter.out.persistence.entity.*
-import com.ecommerce.adapter.out.persistence.repository.CouponJpaRepository
-import com.ecommerce.adapter.out.persistence.repository.ItemJpaRepository
-import com.ecommerce.adapter.out.persistence.repository.UserCouponJpaRepository
-import com.ecommerce.adapter.out.persistence.repository.UserJpaRepository
+import com.ecommerce.adapter.out.persistence.repository.*
 import com.ecommerce.application.dto.OrderCommand
 import com.ecommerce.application.port.`in`.OrderUseCase
 import com.ecommerce.domain.coupon.Coupon
@@ -21,7 +18,8 @@ class OrderFixture(
     private val userRepository: UserJpaRepository,
     private val couponRepository: CouponJpaRepository,
     private val userCouponRepository: UserCouponJpaRepository,
-    private val itemRepository: ItemJpaRepository
+    private val itemRepository: ItemJpaRepository,
+    private val stockRepository: StockJpaRepository
 ) {
 
     enum class OrderFixtureStatus {
@@ -32,39 +30,35 @@ class OrderFixture(
     private lateinit var coupon: CouponEntity
     private lateinit var userCoupon: UserCouponEntity
     private lateinit var items: List<ItemEntity>
+    private lateinit var stocks: List<StockEntity>
 
     fun execute() {
         user = userRepository.save(UserEntity(null, "성현", BigDecimal.valueOf(1_000_000L)))
+        createCouponAndUserCoupon(user.id!!)
+        createItems()
+    }
+
+    fun createCouponAndUserCoupon(userId: Long) {
         coupon = couponRepository.save(CouponEntity(null, "선착순 쿠폰", Coupon.DiscountType.RATE, 10, 30, 50))
         userCoupon = userCouponRepository.save(
-            UserCouponEntity(null, user.id!!, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(30), null)
+            UserCouponEntity(null, userId, coupon, UserCoupon.UserCouponStatus.AVAILABLE, LocalDateTime.now(), LocalDateTime.now().plusDays(30), null)
         )
+    }
 
+    fun createItems() {
         items = itemRepository.saveAll(
             listOf(
-                ItemEntity(null, 1L, "상품 A", BigDecimal.valueOf(15000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 50L)),
-                ItemEntity(null, 1L, "상품 B", BigDecimal.valueOf(20000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 50L)),
-                ItemEntity(null, 1L, "상품 C", BigDecimal.valueOf(17000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 50L)),
-                ItemEntity(null, 1L, "상품 D", BigDecimal.valueOf(9000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 50L)),
-                ItemEntity(null, 1L, "상품 E", BigDecimal.valueOf(10000L),"http://test.png", Item.ItemStatus.SELLING, StockEntity(null, 50L))
+                ItemEntity(null, 1L, "상품 A", BigDecimal.valueOf(15000L),"http://test.png", Item.ItemStatus.SELLING),
+                ItemEntity(null, 1L, "상품 B", BigDecimal.valueOf(20000L),"http://test.png", Item.ItemStatus.SELLING),
+                ItemEntity(null, 1L, "상품 C", BigDecimal.valueOf(17000L),"http://test.png", Item.ItemStatus.SELLING),
+                ItemEntity(null, 1L, "상품 D", BigDecimal.valueOf(9000L),"http://test.png", Item.ItemStatus.SELLING),
+                ItemEntity(null, 1L, "상품 E", BigDecimal.valueOf(10000L),"http://test.png", Item.ItemStatus.SELLING)
             )
         )
-    }
 
-    fun getUser(): UserEntity {
-        return this.user
-    }
-
-    fun getCoupon(): CouponEntity {
-        return this.coupon
-    }
-
-    fun getUserCoupon(): UserCouponEntity {
-        return this.userCoupon
-    }
-
-    fun getItems(): List<ItemEntity> {
-        return this.items
+        stocks = items.map {
+            stockRepository.save(StockEntity(null, it.id!!,50L))
+        }
     }
 
     fun placeOrder(status: OrderFixtureStatus): Order {
@@ -100,6 +94,26 @@ class OrderFixture(
                 OrderCommand.OrderItemCommand(5L, 20L),
             )
         )
+    }
+
+    fun getUser(): UserEntity {
+        return this.user
+    }
+
+    fun getCoupon(): CouponEntity {
+        return this.coupon
+    }
+
+    fun getUserCoupon(): UserCouponEntity {
+        return this.userCoupon
+    }
+
+    fun getItems(): List<ItemEntity> {
+        return this.items
+    }
+
+    fun getStocks(): List<StockEntity> {
+        return this.stocks
     }
 
 }
