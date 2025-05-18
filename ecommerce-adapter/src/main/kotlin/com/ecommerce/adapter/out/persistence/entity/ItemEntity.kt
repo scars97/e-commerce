@@ -21,9 +21,5 @@ class ItemEntity(
     var thumbnail: String,
 
     @Enumerated(EnumType.STRING)
-    var status: Item.ItemStatus,
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "stock_id")
-    val stock: StockEntity,
+    var status: Item.ItemStatus
 ): BaseEntity()

@@ -5,11 +5,12 @@ import com.ecommerce.common.exception.ErrorCode
 
 class Stock(
     val id: Long,
+    val itemId: Long,
     var quantity: Long
 ) {
 
-    fun deduct(count: Long?): Long {
-        if (this.quantity < count!!) {
+    fun deduct(count: Long): Long {
+        if (this.quantity < count) {
             throw CustomException(ErrorCode.OUT_OF_STOCK)
         }
 

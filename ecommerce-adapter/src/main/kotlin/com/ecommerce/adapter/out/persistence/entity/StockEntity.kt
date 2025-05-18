@@ -10,5 +10,7 @@ class StockEntity(
     @Column(name = "stock_id")
     val id: Long?,
 
+    val itemId: Long,
+
     var quantity: Long
 ): BaseEntity()

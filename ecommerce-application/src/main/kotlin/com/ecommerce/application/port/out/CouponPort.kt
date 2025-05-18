@@ -9,7 +9,9 @@ interface CouponPort {
 
     fun commandCoupon(coupon: Coupon): Coupon
 
-    fun findUserCouponBy(userCouponId: Long, userId: Long): UserCoupon
+    fun findUserCouponBy(couponId: Long, userId: Long): UserCoupon
+
+    fun isExistsUserCoupon(couponId: Long, userId: Long): Boolean
 
     fun commandUserCoupon(userCoupon: UserCoupon): UserCoupon
 

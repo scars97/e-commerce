@@ -5,7 +5,9 @@ import com.ecommerce.application.port.`in`.OrderUseCase
 import com.ecommerce.application.port.out.CouponPort
 import com.ecommerce.application.port.out.ItemPort
 import com.ecommerce.application.port.out.OrderPort
+import com.ecommerce.domain.event.DeductStockEvent
 import com.ecommerce.domain.order.Order
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 class OrderService(
     private val orderPort: OrderPort,
     private val itemPort: ItemPort,
-    private val couponPort: CouponPort
+    private val couponPort: CouponPort,
+    private val eventPublisher: ApplicationEventPublisher
 ): OrderUseCase {
 
     @Transactional
@@ -21,13 +24,8 @@ class OrderService(
         val order = orderCommand.toOrder()
         val orderItems = order.orderItems
 
-        val items = itemPort.getItemsIn(orderItems.map { it.itemId }.toList())
-        val quantityOfItem = orderItems.associate { it.itemId to it.quantity }
-        items.forEach {
-            it.isSelling()
-            it.deductStock(quantityOfItem[it.id])
-        }
-        itemPort.updateItems(items)
+        val items = itemPort.getItemsIn(orderItems.map { it.itemId })
+        items.forEach { it.isSelling() }
 
         order.calculateOriginPrice(items)
 
@@ -37,6 +35,8 @@ class OrderService(
 
             order.calculateDiscountPrice(userCoupon.coupon)
         }
+
+        eventPublisher.publishEvent(DeductStockEvent(items, orderItems))
         
         return orderPort.commandOrder(order)
     }
