@@ -10,7 +10,6 @@ import java.util.Optional
 
 interface CouponJpaRepository: JpaRepository<CouponEntity, Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select c from CouponEntity c where c.id = :couponId")
     fun findByIdWithLock(@Param("couponId") couponId: Long): Optional<CouponEntity>
 
