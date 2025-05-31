@@ -10,7 +10,7 @@ import java.util.Optional
 
 interface StockJpaRepository: JpaRepository<StockEntity, Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    //@Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from StockEntity s where s.itemId = :itemId")
     fun findByItemIdWithLock(@Param("itemId") itemId: Long): Optional<StockEntity>
 
