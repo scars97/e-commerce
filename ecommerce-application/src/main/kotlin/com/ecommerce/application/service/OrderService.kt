@@ -30,15 +30,20 @@ class OrderService(
         order.calculateOriginPrice(items)
 
         order.couponId?.let {
-            val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
-            couponPort.commandUserCoupon(userCoupon.use())
-
-            order.calculateDiscountPrice(userCoupon.coupon)
+            applyCouponTo(order)
         }
 
+        // TODO 재고 차감 로직 이벤트 처리
         eventPublisher.publishEvent(DeductStockEvent(items, orderItems))
-        
+
         return orderPort.commandOrder(order)
+    }
+
+    private fun applyCouponTo(order: Order) {
+        val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
+        couponPort.commandUserCoupon(userCoupon.use())
+
+        order.calculateDiscountPrice(userCoupon.coupon)
     }
 
 }
