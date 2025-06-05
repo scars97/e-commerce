@@ -15,19 +15,17 @@ class DeductStockEventListener(
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun deductStock(event: DeductStockEvent) {
-        val itemOfId = event.items.associateBy { it.id }
+        val orderItem = event.orderItem
 
-        event.orderItems.forEach {
-            val stock = stockPort.findStockByItemId(it.itemId)
+        val stock = stockPort.findStockByItemId(orderItem.itemId)
 
-            if (stock.deduct(it.quantity) == 0L) {
-                val item = itemOfId[it.itemId]!!
-                item.soldOut()
-                itemPort.updateItem(item)
-            }
-
-            stockPort.deductStock(stock)
+        if (stock.deduct(orderItem.quantity) == 0L) {
+            val item = event.item
+            item.soldOut()
+            itemPort.updateItem(item)
         }
+
+        stockPort.deductStock(stock)
     }
 
 }

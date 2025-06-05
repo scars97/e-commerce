@@ -89,6 +89,7 @@ class OrderUseCaseTest @Autowired constructor(
     fun whenItemQuantityIs50AndOrdersFor1Item_then50UserWillSucceedBut1UserWillFail() {
         // given
         val totalUser = 51
+
         userFixture.createBulkUsers(totalUser)
         itemFixture.createItemsAndStocks(50L)
 
@@ -115,6 +116,10 @@ class OrderUseCaseTest @Autowired constructor(
         CompletableFuture.allOf(*tasks.toTypedArray()).join()
 
         // then
+        Thread.sleep(3000)
+        val resultStock = stockRepository.findByItemIdWithLock(1L).get()
+        assertThat(resultStock.quantity).isZero()
+
         assertThat(successCount.get()).isEqualTo(50)
         assertThat(failureCount.get()).isOne()
     }

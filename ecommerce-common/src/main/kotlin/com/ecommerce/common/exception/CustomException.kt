@@ -2,4 +2,4 @@ package com.ecommerce.common.exception
 
 class CustomException(
     val errorCode: ErrorCode
-): RuntimeException()
+): RuntimeException(errorCode.message)
