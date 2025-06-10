@@ -10,6 +10,7 @@ import com.ecommerce.adapter.out.persistence.repository.StockJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserCouponJpaRepository
 import com.ecommerce.application.dto.OrderCommand
 import com.ecommerce.application.port.`in`.OrderUseCase
+import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
 import com.ecommerce.domain.order.Order
 import org.assertj.core.api.Assertions.*
@@ -111,12 +112,41 @@ class OrderUseCaseTest @Autowired constructor(
 
         // then
         Thread.sleep(3000)
-        val resultStock = stockRepository.findByItemIdWithLock(1L).get()
+        val resultStock = stockRepository.findByItemId(1L).get()
         assertThat(resultStock.quantity).isZero()
 
         val orders = orderJpaRepository.findAll()
         val cancelCount = orders.count { it.status == Order.OrderStatus.CANCEL }
         assertThat(cancelCount).isOne()
+    }
+
+    @DisplayName("쿠폰이 적용된 주문이 실패하는 경우, 적용된 쿠폰 상태가 USED 에서 AVAILABLE 로 변경된다.")
+    @Test
+    fun whenCouponWasAppliedFail_thenAppliedCouponStatusChangeFromUSEDToAVAILALBE() {
+        // given
+        val user = userFixture.createSingleUser(BigDecimal.valueOf(50_000L))
+        val userCoupon = couponFixture.createAvailableUserCoupon(
+                user.id!!,
+                couponFixture.createCoupon(Coupon.DiscountType.AMOUNT, 1000L, 1)
+            )
+
+        val items = itemFixture.createItemsAndStocks(1L)
+
+        // when
+        val result = sut.placeOrder(
+            OrderCommand(
+                userId = user.id!!,
+                couponId = userCoupon.coupon.id,
+                orderItems = listOf(OrderCommand.OrderItemCommand(items[0].id!!, 2L))
+            )
+        )
+
+        // then
+        Thread.sleep(3000)
+        assertThat(result.status).isEqualTo(Order.OrderStatus.CANCEL)
+
+        val findUserCoupon = userCouponRepository.findByCoupon_IdAndUserId(userCoupon.coupon.id!!, user.id!!).get()
+        assertThat(findUserCoupon.status).isEqualTo(UserCoupon.UserCouponStatus.AVAILABLE)
     }
 
 }
