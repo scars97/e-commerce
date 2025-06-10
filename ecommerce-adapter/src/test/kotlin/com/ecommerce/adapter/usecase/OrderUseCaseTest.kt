@@ -5,10 +5,12 @@ import com.ecommerce.adapter.fixture.CouponFixture
 import com.ecommerce.adapter.fixture.ItemFixture
 import com.ecommerce.adapter.fixture.OrderFixture
 import com.ecommerce.adapter.fixture.UserFixture
+import com.ecommerce.adapter.out.persistence.repository.OrderJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.StockJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserCouponJpaRepository
 import com.ecommerce.application.dto.OrderCommand
 import com.ecommerce.application.port.`in`.OrderUseCase
+import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.coupon.UserCoupon
 import com.ecommerce.domain.order.Order
 import org.assertj.core.api.Assertions.*
@@ -25,6 +27,7 @@ class OrderUseCaseTest @Autowired constructor(
     private val userFixture: UserFixture,
     private val itemFixture: ItemFixture,
     private val couponFixture: CouponFixture,
+    private val orderJpaRepository: OrderJpaRepository,
     private val userCouponRepository: UserCouponJpaRepository,
     private val stockRepository: StockJpaRepository
 ): IntegrateTestSupport() {
@@ -48,7 +51,7 @@ class OrderUseCaseTest @Autowired constructor(
         // then
         assertThat(result)
             .extracting("id", "couponId", "userId", "status")
-            .containsExactly(1L, 1L, 1L, Order.OrderStatus.ORDERED)
+            .containsExactly(1L, 1L, 1L, Order.OrderStatus.COMPLETED)
         verifyOrderPrice(command, result)
         verifyRemainingStock(deductStock)
         verifyUserCoupon()
@@ -89,34 +92,61 @@ class OrderUseCaseTest @Autowired constructor(
     fun whenItemQuantityIs50AndOrdersFor1Item_then50UserWillSucceedBut1UserWillFail() {
         // given
         val totalUser = 51
+
         userFixture.createBulkUsers(totalUser)
         itemFixture.createItemsAndStocks(50L)
-
-        val successCount = AtomicInteger(0)
-        val failureCount = AtomicInteger(0)
 
         // when
         val tasks = (1 .. totalUser).map { userId ->
             CompletableFuture.runAsync {
-                try {
-                    sut.placeOrder(
-                        OrderCommand(
-                            userId = userId.toLong(),
-                            couponId = null,
-                            orderItems = listOf(OrderCommand.OrderItemCommand(1L, 1L))
-                        )
+                sut.placeOrder(
+                    OrderCommand(
+                        userId = userId.toLong(),
+                        couponId = null,
+                        orderItems = listOf(OrderCommand.OrderItemCommand(1L, 1L))
                     )
-                    successCount.incrementAndGet()
-                } catch (e: Exception) {
-                    failureCount.incrementAndGet()
-                }
+                )
             }
         }
         CompletableFuture.allOf(*tasks.toTypedArray()).join()
 
         // then
-        assertThat(successCount.get()).isEqualTo(50)
-        assertThat(failureCount.get()).isOne()
+        Thread.sleep(3000)
+        val resultStock = stockRepository.findByItemId(1L).get()
+        assertThat(resultStock.quantity).isZero()
+
+        val orders = orderJpaRepository.findAll()
+        val cancelCount = orders.count { it.status == Order.OrderStatus.CANCEL }
+        assertThat(cancelCount).isOne()
+    }
+
+    @DisplayName("쿠폰이 적용된 주문이 실패하는 경우, 적용된 쿠폰 상태가 USED 에서 AVAILABLE 로 변경된다.")
+    @Test
+    fun whenCouponWasAppliedFail_thenAppliedCouponStatusChangeFromUSEDToAVAILALBE() {
+        // given
+        val user = userFixture.createSingleUser(BigDecimal.valueOf(50_000L))
+        val userCoupon = couponFixture.createAvailableUserCoupon(
+                user.id!!,
+                couponFixture.createCoupon(Coupon.DiscountType.AMOUNT, 1000L, 1)
+            )
+
+        val items = itemFixture.createItemsAndStocks(1L)
+
+        // when
+        val result = sut.placeOrder(
+            OrderCommand(
+                userId = user.id!!,
+                couponId = userCoupon.coupon.id,
+                orderItems = listOf(OrderCommand.OrderItemCommand(items[0].id!!, 2L))
+            )
+        )
+
+        // then
+        Thread.sleep(3000)
+        assertThat(result.status).isEqualTo(Order.OrderStatus.CANCEL)
+
+        val findUserCoupon = userCouponRepository.findByCoupon_IdAndUserId(userCoupon.coupon.id!!, user.id!!).get()
+        assertThat(findUserCoupon.status).isEqualTo(UserCoupon.UserCouponStatus.AVAILABLE)
     }
 
 }

@@ -51,4 +51,7 @@ class CouponPersistenceAdapter(
         return couponMapper.toUserCoupon(saveUserCoupon)
     }
 
+    override fun rollbackUserCoupon(couponId: Long, userId: Long) {
+        userCouponJpaRepository.rollbackToAvailable(couponId, userId)
+    }
 }

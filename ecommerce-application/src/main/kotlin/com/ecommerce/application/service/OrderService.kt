@@ -21,7 +21,7 @@ class OrderService(
 
     @Transactional
     override fun placeOrder(orderCommand: OrderCommand): Order {
-        val order = orderCommand.toOrder()
+        var order = orderCommand.toOrder()
         val orderItems = order.orderItems
 
         val items = itemPort.getItemsIn(orderItems.map { it.itemId })
@@ -30,15 +30,22 @@ class OrderService(
         order.calculateOriginPrice(items)
 
         order.couponId?.let {
-            val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
-            couponPort.commandUserCoupon(userCoupon.use())
-
-            order.calculateDiscountPrice(userCoupon.coupon)
+            applyCouponTo(order)
         }
 
-        eventPublisher.publishEvent(DeductStockEvent(items, orderItems))
-        
-        return orderPort.commandOrder(order)
+        order = orderPort.commandOrder(order)
+
+        // 재고 차감 로직 이벤트 처리
+        eventPublisher.publishEvent(DeductStockEvent(items, order))
+
+        return order
+    }
+
+    private fun applyCouponTo(order: Order) {
+        val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
+        couponPort.commandUserCoupon(userCoupon.use())
+
+        order.calculateDiscountPrice(userCoupon.coupon)
     }
 
 }

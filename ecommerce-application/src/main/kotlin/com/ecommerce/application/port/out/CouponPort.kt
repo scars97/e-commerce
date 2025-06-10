@@ -15,4 +15,6 @@ interface CouponPort {
 
     fun commandUserCoupon(userCoupon: UserCoupon): UserCoupon
 
+    fun rollbackUserCoupon(couponId: Long, userId: Long)
+
 }
