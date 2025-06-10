@@ -36,8 +36,6 @@ class PaymentService(
             PointHistory.createAtUsed(user.id!!, payment.price)
         )
 
-        orderPort.commandOrder(order.paid())
-
         eventPublisher.publishEvent(SendOrderInfoEvent(order))
 
         return paymentPort.savePayment(payment)

@@ -47,7 +47,6 @@ class PaymentUseCaseTest @Autowired constructor(
         verifyPayment(result)
         verifyRemainingPoint(result)
         verifyPointHistory()
-        verifyOrderStatus(result)
     }
 
     private fun verifyPayment(result: Payment) {
@@ -69,11 +68,6 @@ class PaymentUseCaseTest @Autowired constructor(
             .extracting("id", "userId", "status")
             .containsExactly(1L, 1L, PointHistory.PointHistoryStatus.USED)
         assertThat(findPointHistory.amount.compareTo(paymentAmount)).isZero()
-    }
-
-    private fun verifyOrderStatus(result: Payment) {
-        val findOrder = orderRepository.findById(result.orderId).get()
-        assertThat(findOrder.status).isEqualTo(Order.OrderStatus.PAID)
     }
 
 }

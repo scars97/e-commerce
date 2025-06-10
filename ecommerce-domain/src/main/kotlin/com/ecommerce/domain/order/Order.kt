@@ -16,7 +16,7 @@ class Order(
 ) {
 
     enum class OrderStatus {
-        PENDING, COMPLETED, PAID, CANCEL
+        PENDING, COMPLETED, CANCEL
     }
 
     fun calculateOriginPrice(items: List<Item>) {
@@ -33,11 +33,6 @@ class Order(
         this.discountPrice = coupon.calculateDiscount(this.originPrice)
 
         this.totalPrice = this.originPrice - this.discountPrice
-    }
-
-    fun paid(): Order {
-        this.status = OrderStatus.PAID
-        return this
     }
 
     fun complete(): Order {

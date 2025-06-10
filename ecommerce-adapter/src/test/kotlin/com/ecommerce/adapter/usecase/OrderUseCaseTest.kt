@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.atomic.AtomicInteger
 
 class OrderUseCaseTest @Autowired constructor(
     private val sut: OrderUseCase,
@@ -111,7 +110,7 @@ class OrderUseCaseTest @Autowired constructor(
         CompletableFuture.allOf(*tasks.toTypedArray()).join()
 
         // then
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         val resultStock = stockRepository.findByItemId(1L).get()
         assertThat(resultStock.quantity).isZero()
 
@@ -142,7 +141,7 @@ class OrderUseCaseTest @Autowired constructor(
         )
 
         // then
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         assertThat(result.status).isEqualTo(Order.OrderStatus.CANCEL)
 
         val findUserCoupon = userCouponRepository.findByCoupon_IdAndUserId(userCoupon.coupon.id!!, user.id!!).get()
