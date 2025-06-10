@@ -12,11 +12,11 @@ class Order(
     var originPrice: BigDecimal = BigDecimal.ZERO,
     var discountPrice: BigDecimal = BigDecimal.ZERO,
     var totalPrice: BigDecimal = BigDecimal.ZERO,
-    var status: OrderStatus = OrderStatus.ORDERED
+    var status: OrderStatus = OrderStatus.PENDING
 ) {
 
     enum class OrderStatus {
-        ORDERED, PAID, CANCEL
+        PENDING, COMPLETED, PAID, CANCEL
     }
 
     fun calculateOriginPrice(items: List<Item>) {
@@ -37,6 +37,16 @@ class Order(
 
     fun paid(): Order {
         this.status = OrderStatus.PAID
+        return this
+    }
+
+    fun complete(): Order {
+        this.status = OrderStatus.COMPLETED
+        return this
+    }
+
+    fun cancel(): Order {
+        this.status = OrderStatus.CANCEL
         return this
     }
 

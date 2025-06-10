@@ -15,7 +15,7 @@ class StockPersistenceAdapter(
 ): StockPort {
 
     override fun findStockByItemId(itemId: Long): Stock {
-        val stock = jpaRepository.findByItemIdWithLock(itemId)
+        val stock = jpaRepository.findByItemId(itemId)
             .orElseThrow { CustomException(ErrorCode.ITEM_NOT_FOUND) }
 
         return stockMapper.toStock(stock)

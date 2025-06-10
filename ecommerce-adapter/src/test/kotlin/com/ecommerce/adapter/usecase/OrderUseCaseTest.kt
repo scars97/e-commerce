@@ -5,6 +5,7 @@ import com.ecommerce.adapter.fixture.CouponFixture
 import com.ecommerce.adapter.fixture.ItemFixture
 import com.ecommerce.adapter.fixture.OrderFixture
 import com.ecommerce.adapter.fixture.UserFixture
+import com.ecommerce.adapter.out.persistence.repository.OrderJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.StockJpaRepository
 import com.ecommerce.adapter.out.persistence.repository.UserCouponJpaRepository
 import com.ecommerce.application.dto.OrderCommand
@@ -25,6 +26,7 @@ class OrderUseCaseTest @Autowired constructor(
     private val userFixture: UserFixture,
     private val itemFixture: ItemFixture,
     private val couponFixture: CouponFixture,
+    private val orderJpaRepository: OrderJpaRepository,
     private val userCouponRepository: UserCouponJpaRepository,
     private val stockRepository: StockJpaRepository
 ): IntegrateTestSupport() {
@@ -48,7 +50,7 @@ class OrderUseCaseTest @Autowired constructor(
         // then
         assertThat(result)
             .extracting("id", "couponId", "userId", "status")
-            .containsExactly(1L, 1L, 1L, Order.OrderStatus.ORDERED)
+            .containsExactly(1L, 1L, 1L, Order.OrderStatus.COMPLETED)
         verifyOrderPrice(command, result)
         verifyRemainingStock(deductStock)
         verifyUserCoupon()
@@ -93,24 +95,16 @@ class OrderUseCaseTest @Autowired constructor(
         userFixture.createBulkUsers(totalUser)
         itemFixture.createItemsAndStocks(50L)
 
-        val successCount = AtomicInteger(0)
-        val failureCount = AtomicInteger(0)
-
         // when
         val tasks = (1 .. totalUser).map { userId ->
             CompletableFuture.runAsync {
-                try {
-                    sut.placeOrder(
-                        OrderCommand(
-                            userId = userId.toLong(),
-                            couponId = null,
-                            orderItems = listOf(OrderCommand.OrderItemCommand(1L, 1L))
-                        )
+                sut.placeOrder(
+                    OrderCommand(
+                        userId = userId.toLong(),
+                        couponId = null,
+                        orderItems = listOf(OrderCommand.OrderItemCommand(1L, 1L))
                     )
-                    successCount.incrementAndGet()
-                } catch (e: Exception) {
-                    failureCount.incrementAndGet()
-                }
+                )
             }
         }
         CompletableFuture.allOf(*tasks.toTypedArray()).join()
@@ -120,8 +114,9 @@ class OrderUseCaseTest @Autowired constructor(
         val resultStock = stockRepository.findByItemIdWithLock(1L).get()
         assertThat(resultStock.quantity).isZero()
 
-        assertThat(successCount.get()).isEqualTo(50)
-        assertThat(failureCount.get()).isOne()
+        val orders = orderJpaRepository.findAll()
+        val cancelCount = orders.count { it.status == Order.OrderStatus.CANCEL }
+        assertThat(cancelCount).isOne()
     }
 
 }
