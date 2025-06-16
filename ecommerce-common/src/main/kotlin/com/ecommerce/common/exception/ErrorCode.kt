@@ -11,15 +11,16 @@ enum class ErrorCode(
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     ITEM_IS_NOT_ON_SALE(HttpStatus.BAD_REQUEST, "판매 중인 상품이 아닙니다."),
 
-    // 주문
-    OUT_OF_STOCK(HttpStatus.CONFLICT, "요청하신 상품의 재고가 부족하여 주문할 수 없습니다."),
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 내역을 찾을 수 없습니다."),
-
     // 쿠폰
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "쿠폰을 찾을 수 없습니다."),
     INVALID_COUPON(HttpStatus.BAD_REQUEST, "만료되었거나 사용할 수 없는 쿠폰입니다."),
     COUPONS_ARE_EXHAUSTED(HttpStatus.CONFLICT, "쿠폰이 모두 소진되었습니다."),
     COUPON_ALREADY_ISSUED(HttpStatus.CONFLICT, "이미 발급된 쿠폰입니다."),
+
+    // 주문
+    OUT_OF_STOCK(HttpStatus.CONFLICT, "요청하신 상품의 재고가 부족하여 주문할 수 없습니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 내역을 찾을 수 없습니다."),
+    ORDER_CAN_NOT_BE_PAID(HttpStatus.BAD_REQUEST, "결제할 수 없는 주문입니다."),
 
     // 결제
     INVALID_PRICE(HttpStatus.BAD_REQUEST, "결제 금액이 맞지 않습니다."),

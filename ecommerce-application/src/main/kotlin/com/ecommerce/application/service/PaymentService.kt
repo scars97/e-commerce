@@ -28,6 +28,8 @@ class PaymentService(
 
         val user = userPort.findUserById(payment.userId)
         val order = orderPort.findOrderById(payment.orderId)
+
+        order.ableToPaid()
         payment.priceEqualTo(order.totalPrice)
         
         userPort.commandUser(user.pointUse(payment.price))
