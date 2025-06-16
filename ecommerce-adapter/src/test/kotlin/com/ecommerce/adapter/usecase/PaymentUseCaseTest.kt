@@ -22,8 +22,7 @@ class PaymentUseCaseTest @Autowired constructor(
     private val orderFixture: OrderFixture,
     private val userFixture: UserFixture,
     private val userRepository: UserJpaRepository,
-    private val pointHistoryRepository: PointHistoryJpaRepository,
-    private val orderRepository: OrderJpaRepository
+    private val pointHistoryRepository: PointHistoryJpaRepository
 ): IntegrateTestSupport() {
 
     private lateinit var order: Order
@@ -32,6 +31,7 @@ class PaymentUseCaseTest @Autowired constructor(
     @BeforeEach
     fun setUp() {
         order = orderFixture.placeOrder(OrderFixture.OrderFixtureStatus.SINGLE)
+        Thread.sleep(1000)
         paymentAmount = order.totalPrice
     }
 

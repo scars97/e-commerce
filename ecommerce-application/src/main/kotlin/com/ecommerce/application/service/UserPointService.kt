@@ -2,17 +2,18 @@ package com.ecommerce.application.service
 
 import com.ecommerce.application.dto.PointCommand
 import com.ecommerce.application.port.`in`.UserPointUseCase
-import com.ecommerce.application.port.out.PointHistoryPort
 import com.ecommerce.application.port.out.UserPort
+import com.ecommerce.domain.event.CreatePointHistory
 import com.ecommerce.domain.user.PointHistory
 import com.ecommerce.domain.user.User
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserPointService(
     private val userPort: UserPort,
-    private val pointHistoryPort: PointHistoryPort
+    private val eventPublisher: ApplicationEventPublisher
 ): UserPointUseCase {
 
     @Transactional
@@ -21,9 +22,7 @@ class UserPointService(
         
         userPort.commandUser(user.pointRecharge(command.price))
 
-        pointHistoryPort.saveHistory(
-            PointHistory.createAtRecharge(command.userId, command.price)
-        )
+        eventPublisher.publishEvent(CreatePointHistory(command.userId, command.price, PointHistory.PointHistoryStatus.RECHARGE))
         
         return user
     }

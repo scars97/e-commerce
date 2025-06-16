@@ -17,20 +17,11 @@ class PointHistory(
     }
 
     companion object {
-        fun createAtRecharge(userId: Long, price: BigDecimal): PointHistory {
+        fun create(userId: Long, price: BigDecimal, status: PointHistoryStatus): PointHistory {
             return PointHistory(
                 null,
                 userId,
-                PointHistoryStatus.RECHARGE,
-                price
-            )
-        }
-
-        fun createAtUsed(userId: Long, price: BigDecimal): PointHistory {
-            return PointHistory(
-                null,
-                userId,
-                PointHistoryStatus.USED,
+                status,
                 price
             )
         }

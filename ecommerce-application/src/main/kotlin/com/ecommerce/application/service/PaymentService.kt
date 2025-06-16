@@ -5,8 +5,8 @@ import com.ecommerce.domain.event.SendOrderInfoEvent
 import com.ecommerce.application.port.`in`.PaymentUseCase
 import com.ecommerce.application.port.out.OrderPort
 import com.ecommerce.application.port.out.PaymentPort
-import com.ecommerce.application.port.out.PointHistoryPort
 import com.ecommerce.application.port.out.UserPort
+import com.ecommerce.domain.event.CreatePointHistory
 import com.ecommerce.domain.payment.Payment
 import com.ecommerce.domain.user.PointHistory
 import org.springframework.context.ApplicationEventPublisher
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional
 class PaymentService(
     private val paymentPort: PaymentPort,
     private val userPort: UserPort,
-    private val pointHistoryPort: PointHistoryPort,
     private val orderPort: OrderPort,
     private val eventPublisher: ApplicationEventPublisher
 ): PaymentUseCase {
@@ -34,10 +33,7 @@ class PaymentService(
         
         userPort.commandUser(user.pointUse(payment.price))
 
-        pointHistoryPort.saveHistory(
-            PointHistory.createAtUsed(user.id!!, payment.price)
-        )
-
+        eventPublisher.publishEvent(CreatePointHistory(user.id!!, payment.price, PointHistory.PointHistoryStatus.USED))
         eventPublisher.publishEvent(SendOrderInfoEvent(order))
 
         return paymentPort.savePayment(payment)
