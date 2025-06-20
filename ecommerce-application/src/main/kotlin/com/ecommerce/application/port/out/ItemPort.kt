@@ -11,4 +11,8 @@ interface ItemPort {
 
     fun updateItem(item: Item)
 
+    fun getPopularItemIds(period: Long): List<Long>
+
+    fun updatePopularItemRank(period: Long, itemIds: List<Long>)
+
 }

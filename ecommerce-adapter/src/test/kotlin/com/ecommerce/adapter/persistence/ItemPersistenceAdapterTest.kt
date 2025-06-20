@@ -10,14 +10,18 @@ import com.ecommerce.domain.item.Item
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.redis.core.RedisTemplate
 import java.math.BigDecimal
 
 class ItemPersistenceAdapterTest @Autowired constructor(
     private val sut: ItemPort,
     private val itemJpaRepository: ItemJpaRepository,
-    private val stockJpaRepository: StockJpaRepository
+    private val stockJpaRepository: StockJpaRepository,
+    private val redisTemplate: RedisTemplate<String, String>
 ): IntegrateTestSupport() {
 
     @BeforeEach
@@ -53,6 +57,29 @@ class ItemPersistenceAdapterTest @Autowired constructor(
         assertThat(result.totalPages).isEqualTo(3)
         assertThat(result.totalElements).isEqualTo(5)
         assertThat(result.content).hasSize(1)
+    }
+
+    @TestFactory
+    fun popularItemRankCommandAndQueryTest(): List<DynamicTest> {
+        val period = 3L
+        val redisKey = "popular-items-".plus(period)
+
+        return listOf(
+            DynamicTest.dynamicTest("인기 상품 순위 업데이트") {
+                val itemIds = listOf(1L, 2L, 3L)
+
+                sut.updatePopularItemRank(period, itemIds)
+
+                val result = redisTemplate.opsForValue().get(redisKey)
+                assertThat(result).isEqualTo("[1, 2, 3]")
+            },
+            DynamicTest.dynamicTest("인기 상품 조회") {
+                val result = sut.getPopularItemIds(period)
+
+                assertThat(result).hasSize(3)
+                    .containsExactly(1L, 2L, 3L)
+            }
+        )
     }
 
 }
