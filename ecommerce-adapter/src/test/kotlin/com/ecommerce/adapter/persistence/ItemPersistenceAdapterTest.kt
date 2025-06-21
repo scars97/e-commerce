@@ -59,23 +59,28 @@ class ItemPersistenceAdapterTest @Autowired constructor(
         assertThat(result.content).hasSize(1)
     }
 
+    @DisplayName("인기 상품 순위 업데이트 & 조회 테스트")
     @TestFactory
     fun popularItemRankCommandAndQueryTest(): List<DynamicTest> {
+        // given
         val period = 3L
         val redisKey = "popular-items-".plus(period)
+        val itemIds = listOf(1L, 2L, 3L)
 
         return listOf(
             DynamicTest.dynamicTest("인기 상품 순위 업데이트") {
-                val itemIds = listOf(1L, 2L, 3L)
-
+                // when
                 sut.updatePopularItemRank(period, itemIds)
 
+                // then
                 val result = redisTemplate.opsForValue().get(redisKey)
                 assertThat(result).isEqualTo("[1, 2, 3]")
             },
             DynamicTest.dynamicTest("인기 상품 조회") {
+                // when
                 val result = sut.getPopularItemIds(period)
 
+                // then
                 assertThat(result).hasSize(3)
                     .containsExactly(1L, 2L, 3L)
             }

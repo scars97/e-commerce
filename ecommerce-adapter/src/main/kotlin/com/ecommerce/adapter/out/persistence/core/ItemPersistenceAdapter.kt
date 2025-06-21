@@ -36,6 +36,13 @@ class ItemPersistenceAdapter(
         return items.map { itemMapper.toItem(it) }
     }
 
+    override fun getItems(itemId: Long): Item {
+        val item = jpaRepository.findById(itemId)
+            .orElseThrow { CustomException(ErrorCode.ITEM_NOT_FOUND) }
+
+        return itemMapper.toItem(item)
+    }
+
     override fun updateItem(item: Item) {
         jpaRepository.save(itemMapper.toItemEntity(item))
     }
