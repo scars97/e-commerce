@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class RedisCleanUp(
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<String, String>
 ) {
 
     private val log = LoggerFactory.getLogger(RedisCleanUp::class.java)

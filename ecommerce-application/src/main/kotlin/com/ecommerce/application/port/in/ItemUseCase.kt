@@ -8,6 +8,6 @@ interface ItemUseCase {
 
     fun getItems(page: Int, size: Int): Page<Item>
 
-    fun getPopularItemsOnTop10(period: Long): List<PopularItem>
+    fun getPopularItems(period: Long): List<PopularItem>
 
 }

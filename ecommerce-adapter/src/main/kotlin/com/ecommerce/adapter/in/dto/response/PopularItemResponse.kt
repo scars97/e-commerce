@@ -4,7 +4,6 @@ import com.ecommerce.domain.item.PopularItem
 
 data class PopularItemResponse(
     val rank: Int,
-    val cumulativeSales: Long,
     val item: ItemResponse
 ) {
 
@@ -12,7 +11,6 @@ data class PopularItemResponse(
         fun of(popularItem: PopularItem): PopularItemResponse {
             return PopularItemResponse(
                 rank = popularItem.rank,
-                cumulativeSales = popularItem.cumulativeSales,
                 item = ItemResponse.of(popularItem.item)
             )
         }

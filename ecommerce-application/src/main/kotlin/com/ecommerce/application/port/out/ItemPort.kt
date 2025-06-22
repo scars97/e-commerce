@@ -9,6 +9,12 @@ interface ItemPort {
 
     fun getItemsIn(itemIds: List<Long>): List<Item>
 
+    fun getItems(itemId: Long): Item
+
     fun updateItem(item: Item)
+
+    fun getPopularItemIds(period: Long): List<Long>
+
+    fun updatePopularItemRank(period: Long, itemIds: List<Long>)
 
 }

@@ -32,7 +32,7 @@ class ItemController(
     fun getPopularItems(
         @RequestParam(value = "period", defaultValue = "3") period: Long
     ): ResponseEntity<List<PopularItemResponse>> {
-        val popularItems = itemUseCase.getPopularItemsOnTop10(period)
+        val popularItems = itemUseCase.getPopularItems(period)
 
         return ResponseEntity.ok(
             popularItems.map { PopularItemResponse.of(it) }.toList()
