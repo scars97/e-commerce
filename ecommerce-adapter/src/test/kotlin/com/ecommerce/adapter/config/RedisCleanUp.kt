@@ -1,4 +1,4 @@
-package com.ecommerce.common.config
+package com.ecommerce.adapter.config
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.RedisTemplate

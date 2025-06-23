@@ -1,6 +1,5 @@
 package com.ecommerce.adapter.config
 
-import com.ecommerce.common.config.RedisCleanUp
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
