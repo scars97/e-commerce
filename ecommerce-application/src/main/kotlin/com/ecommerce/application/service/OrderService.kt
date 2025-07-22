@@ -5,6 +5,7 @@ import com.ecommerce.application.port.`in`.OrderUseCase
 import com.ecommerce.application.port.out.CouponPort
 import com.ecommerce.application.port.out.ItemPort
 import com.ecommerce.application.port.out.OrderPort
+import com.ecommerce.domain.coupon.Coupon
 import com.ecommerce.domain.event.DeductStockEvent
 import com.ecommerce.domain.order.Order
 import org.springframework.context.ApplicationEventPublisher
@@ -27,11 +28,7 @@ class OrderService(
         val items = itemPort.getItemsIn(orderItems.map { it.itemId })
         items.forEach { it.isSelling() }
 
-        order.calculateOriginPrice(items)
-
-        order.couponId?.let {
-            applyCouponTo(order)
-        }
+        order.calculatePrice(items, applyCouponTo(order))
 
         order = orderPort.commandOrder(order)
 
@@ -41,11 +38,13 @@ class OrderService(
         return order
     }
 
-    private fun applyCouponTo(order: Order) {
+    private fun applyCouponTo(order: Order): Coupon {
+        if (order.couponId == null) return Coupon.none()
+
         val userCoupon = couponPort.findUserCouponBy(order.couponId!!, order.userId)
         couponPort.commandUserCoupon(userCoupon.use())
 
-        order.calculateDiscountPrice(userCoupon.coupon)
+        return userCoupon.coupon
     }
 
 }
