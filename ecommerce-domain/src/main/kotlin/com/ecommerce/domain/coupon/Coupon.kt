@@ -23,9 +23,19 @@ class Coupon(
             override fun calculateDiscount(price: BigDecimal, discount: Long): BigDecimal {
                 return BigDecimal.valueOf(discount)
             }
+        },
+        NONE {
+            override fun calculateDiscount(price: BigDecimal, discount: Long): BigDecimal {
+                return BigDecimal.ZERO
+            }
         };
 
         abstract fun calculateDiscount(price: BigDecimal, discount: Long): BigDecimal
+    }
+
+    companion object {
+        fun none(): Coupon =
+            Coupon(0L, "none", DiscountType.NONE, 0L, 0, 0L)
     }
 
     fun calculateDiscount(price: BigDecimal): BigDecimal {

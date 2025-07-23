@@ -8,8 +8,7 @@ import com.ecommerce.domain.order.OrderItem
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class OrderTest {
@@ -30,45 +29,39 @@ class OrderTest {
         }
     }
 
-    @DisplayName("주문 금액 계산")
-    @TestFactory
-    fun calculateOrderPrice(): List<DynamicTest> {
+    @DisplayName("쿠폰 타입별 주문 금액 계산")
+    @Test
+    fun calculateOrderPriceOnCouponType() {
         // given
-        val orderQuantity = 2L
-        val orderItem = items.map { OrderItem(null, it.id, orderQuantity) }
-        val order = Order(null, 1L, 1L, orderItem)
-
-        var expectOriginPrice = BigDecimal.ZERO
-
-        return listOf(
-            DynamicTest.dynamicTest("총 주문 금액이 계산 된다.") {
-                // when
-                order.calculateOriginPrice(items)
-
-                // then
-                expectOriginPrice = items.sumOf {
-                     it.price * (BigDecimal.valueOf(orderQuantity))
-                }
-                assertThat(order.originPrice).isEqualTo(expectOriginPrice)
-                assertThat(order.originPrice).isEqualTo(order.totalPrice)
-            },
-            DynamicTest.dynamicTest("할인 금액 계산") {
-                val coupon = Coupon(1L, "쿠폰 A", Coupon.DiscountType.RATE, 10L, 30, 10L)
-
-                // when
-                order.calculateDiscountPrice(coupon)
-
-                // then
-                val expectDiscountPrice = expectOriginPrice * (
-                    BigDecimal.valueOf(coupon.discount).divide(BigDecimal.valueOf(100))
-                )
-                assertThat(order.discountPrice).isEqualTo(expectDiscountPrice)
-
-                val expectTotalPrice = expectOriginPrice - expectDiscountPrice
-                assertThat(expectOriginPrice).isNotEqualTo(expectTotalPrice)
-                assertThat(order.totalPrice).isEqualTo(expectTotalPrice)
-            }
+        val testCases = listOf(
+            Coupon(1L, "10% 할인", Coupon.DiscountType.RATE, 10L, 30, 10L),
+            Coupon(2L, "1,000원 할인", Coupon.DiscountType.AMOUNT, 1000L, 30, 10L),
+            Coupon(0L, "할인 없음", Coupon.DiscountType.NONE, 0L, 0, 0L)
         )
+
+        testCases.forEach { coupon ->
+            // when
+            val orderQuantity = 2L
+            val orderItem = items.map { OrderItem(null, it.id, orderQuantity) }
+            val order = Order(null, 1L, 1L, orderItem)
+
+            order.calculatePrice(items, coupon)
+
+            // then
+            val expectOriginPrice = items.sumOf {
+                it.price * (BigDecimal.valueOf(orderQuantity))
+            }
+            val expectDiscountPrice = when (coupon.type) {
+                Coupon.DiscountType.RATE -> expectOriginPrice * BigDecimal.valueOf(coupon.discount).divide(BigDecimal.valueOf(100))
+                Coupon.DiscountType.AMOUNT -> BigDecimal.valueOf(coupon.discount)
+                Coupon.DiscountType.NONE -> BigDecimal.ZERO
+            }
+            val expectTotalPrice = expectOriginPrice.minus(expectDiscountPrice)
+
+            assertThat(order.originPrice).isEqualTo(expectOriginPrice)
+            assertThat(order.discountPrice).isEqualTo(expectDiscountPrice)
+            assertThat(order.totalPrice).isEqualTo(expectTotalPrice)
+        }
     }
 
 }

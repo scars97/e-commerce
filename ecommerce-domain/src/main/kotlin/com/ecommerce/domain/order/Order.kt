@@ -21,20 +21,16 @@ class Order(
         PENDING, COMPLETED, CANCEL
     }
 
-    fun calculateOriginPrice(items: List<Item>) {
+    fun calculatePrice(items: List<Item>, coupon: Coupon) {
         val quantityOfItem = this.orderItems.associate { it.itemId to BigDecimal.valueOf(it.quantity) }
 
         this.originPrice = items.sumOf {
-             it.price * quantityOfItem[it.id]!!
+            it.price * quantityOfItem[it.id]!!
         }
 
-        this.totalPrice = this.originPrice
-    }
-
-    fun calculateDiscountPrice(coupon: Coupon) {
         this.discountPrice = coupon.calculateDiscount(this.originPrice)
 
-        this.totalPrice = this.originPrice - this.discountPrice
+        this.totalPrice = this.originPrice.minus(this.discountPrice)
     }
 
     fun complete(): Order {
