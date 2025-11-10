@@ -1,49 +1,32 @@
-name: Claude PR Assistant
+name: Auto review PRs
 
 on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  issues:
-    types: [opened, assigned]
-  pull_request_review:
-    types: [submitted]
+  pull_request:
+    types: [opened]
 
 jobs:
-  claude-code-action:
-    if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
-    runs-on: ubuntu-latest
+  auto-review:
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
       id-token: write
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run Claude PR Action
-        uses: grll/claude-code-action@beta
+      - name: Auto review PR
+        uses: anthropics/claude-code-action@main
         with:
-          use_oauth: true
-          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+          direct_prompt: |
+            Please review this PR. Look at the changes and provide thoughtful feedback on:
+            - Code quality and best practices
+            - Potential bugs or issues
+            - Suggestions for improvements
+            - Overall architecture and design decisions
 
-          timeout_minutes: "60"
-          # Optional: add custom trigger phrase (default: @claude)
-          # trigger_phrase: "/claude"
-          # Optional: add assignee trigger for issues
-          # assignee_trigger: "claude"
-          # Optional: add custom environment variables (YAML format)
-          # claude_env: |
-          #   NODE_ENV: test
-          #   DEBUG: true
-          #   API_URL: https://api.example.com
+            Be constructive and specific in your feedback. Give inline comments where applicable.
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review,mcp__github__get_pull_request_diff"
