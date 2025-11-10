@@ -1,32 +1,55 @@
-name: Auto review PRs
+name: Claude PR Review
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  auto-review:
-    permissions:
-      contents: read
-      id-token: write
+  review:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Auto review PR
-        uses: anthropics/claude-code-action@main
-        with:
-          direct_prompt: |
-            Please review this PR. Look at the changes and provide thoughtful feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Suggestions for improvements
-            - Overall architecture and design decisions
+      - name: Get diff from PR
+        id: diff
+        run: |
+          # 변경된 코드 diff 추출
+          git fetch origin main
+          git diff origin/main...HEAD > changes.diff
+          echo "Diff saved to changes.diff"
 
-            Be constructive and specific in your feedback. Give inline comments where applicable.
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_tools: "mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review,mcp__github__get_pull_request_diff"
+      - name: Run Claude API for code review
+        id: claude
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          echo "Sending diff to Claude for review..."
+
+          REVIEW=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $CLAUDE_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"claude-3-sonnet-20240229\",
+              \"max_tokens\": 1000,
+              \"messages\": [
+                {\"role\": \"user\", \"content\": \"You are a senior software engineer. Review the following code diff and provide a concise code review with improvement suggestions. Output in markdown.\n\n$(cat changes.diff | head -c 12000)\"}
+              ]
+            }" | jq -r '.content[0].text')
+
+          echo "REVIEW<<EOF" >> $GITHUB_ENV
+          echo "$REVIEW" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Post review comment on PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW: ${{ env.REVIEW }}
+        run: |
+          echo "Posting Claude review comment to PR..."
+          gh pr comment ${{ github.event.pull_request.number }} --body "$REVIEW"
