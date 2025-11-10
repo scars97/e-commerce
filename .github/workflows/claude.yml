@@ -1,63 +1,39 @@
-name: Claude PR Review
+name: Claude Code
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   issue_comment:
     types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
-  review:
+  claude:
     if: |
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
       contents: read
+      pull-requests: read
       issues: read
-
+      id-token: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
 
-      - name: Get diff for PR
-        id: diff
-        run: |
-          git fetch origin main
-          git diff origin/main...HEAD > changes.diff
-
-      - name: Call Claude API for review
+      - name: Run Claude Code
         id: claude
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          echo "Requesting Claude review..."
-          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            -d "{
-              \"model\": \"claude-3-sonnet-20240229\",
-              \"max_tokens\": 1000,
-              \"messages\": [
-                {\"role\": \"user\", \"content\": \"You are a senior engineer. Review the following code diff and suggest improvements in markdown format.\\n\\n$(cat changes.diff | head -c 12000)\"}
-              ]
-            }" | jq -r '.content[0].text')
-
-          echo "REVIEW<<EOF" >> $GITHUB_ENV
-          echo "$RESPONSE" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Post Claude review comment
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REVIEW: ${{ env.REVIEW }}
-        run: |
-          if [ "${{ github.event_name }}" == "issue_comment" ]; then
-            PR_NUMBER=$(jq -r '.issue.number' <<< '${{ toJson(github.event) }}')
-          else
-            PR_NUMBER=${{ github.event.pull_request.number }}
-          fi
-          echo "Posting review to PR #$PR_NUMBER..."
-          gh pr comment $PR_NUMBER --body "$REVIEW"
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: |
+            --allowedTools "Bash(bun install),Bash(bun test:*),Bash(bun run format),Bash(bun typecheck)"
+            --model "claude-opus-4-1-20250805"
