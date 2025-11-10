@@ -3,53 +3,61 @@ name: Claude PR Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
 
 jobs:
   review:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: read
+      issues: read
 
     steps:
-      - name: Checkout PR code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get diff from PR
+      - name: Get diff for PR
         id: diff
         run: |
-          # 변경된 코드 diff 추출
           git fetch origin main
           git diff origin/main...HEAD > changes.diff
-          echo "Diff saved to changes.diff"
 
-      - name: Run Claude API for code review
+      - name: Call Claude API for review
         id: claude
         env:
-          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          echo "Sending diff to Claude for review..."
-
-          REVIEW=$(curl -s https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $CLAUDE_API_KEY" \
+          echo "Requesting Claude review..."
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
             -H "anthropic-version: 2023-06-01" \
             -H "content-type: application/json" \
             -d "{
               \"model\": \"claude-3-sonnet-20240229\",
               \"max_tokens\": 1000,
               \"messages\": [
-                {\"role\": \"user\", \"content\": \"You are a senior software engineer. Review the following code diff and provide a concise code review with improvement suggestions. Output in markdown.\n\n$(cat changes.diff | head -c 12000)\"}
+                {\"role\": \"user\", \"content\": \"You are a senior engineer. Review the following code diff and suggest improvements in markdown format.\\n\\n$(cat changes.diff | head -c 12000)\"}
               ]
             }" | jq -r '.content[0].text')
 
           echo "REVIEW<<EOF" >> $GITHUB_ENV
-          echo "$REVIEW" >> $GITHUB_ENV
+          echo "$RESPONSE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Post review comment on PR
+      - name: Post Claude review comment
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REVIEW: ${{ env.REVIEW }}
         run: |
-          echo "Posting Claude review comment to PR..."
-          gh pr comment ${{ github.event.pull_request.number }} --body "$REVIEW"
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            PR_NUMBER=$(jq -r '.issue.number' <<< '${{ toJson(github.event) }}')
+          else
+            PR_NUMBER=${{ github.event.pull_request.number }}
+          fi
+          echo "Posting review to PR #$PR_NUMBER..."
+          gh pr comment $PR_NUMBER --body "$REVIEW"
